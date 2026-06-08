@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="refresh" content="3600">
+    <meta name="description" content="Registro de estoque diário - Qdelícia Frutas.">
+    <title>Estoque - Qdelícia Frutas</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        /* ── Menu de seleção de formulário ────────────────────── */
+        .tab-buttons {
+            /* Mobile: painel fixo acima da bottom-bar, slide-up */
+            position: fixed;
+            bottom: 62px; /* altura da bottom-bar */
+            left: 0;
+            right: 0;
+            z-index: 240;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            padding: 14px 14px 16px;
+            background: #ffffff;
+            border-top: 2px solid rgba(99, 102, 241, 0.18);
+            border-radius: 20px 20px 0 0;
+            box-shadow: 0 -6px 28px rgba(67, 56, 202, 0.14);
+            transform: translateY(0);
+            opacity: 1;
+            transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1),
+                        opacity 0.28s ease;
+        }
+
+        /* Classe hidden = slide para baixo em vez de display:none */
+        .tab-buttons.hidden {
+            transform: translateY(110%);
+            opacity: 0;
+            pointer-events: none;
+            display: grid !important; /* sobrescreve o display:none global */
+        }
+
+        .tab-btn {
+            padding: 13px 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border: 1.5px solid transparent;
+            border-radius: 14px;
+            background-color: #f1f5f9;
+            color: #6366f1;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s, transform 0.15s, box-shadow 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+            min-height: 50px;
+            white-space: nowrap;
+            font-family: inherit;
+        }
+
+        .tab-btn:nth-last-child(1):nth-child(odd) {
+            grid-column: 1 / -1;
+        }
+
+        .tab-btn:hover:not(:disabled) {
+            background-color: #ede9fe;
+            border-color: #a5b4fc;
+            transform: translateY(-1px);
+            box-shadow: 0 3px 8px rgba(99,102,241,0.15);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            color: #ffffff;
+            border-color: transparent;
+            box-shadow: 0 4px 14px rgba(99,102,241,0.4);
+        }
+
+        .tab-btn:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
+            background-color: #f0f0f0;
+            color: #aaa;
+            box-shadow: none;
+            transform: none;
+        }
+
+        /* ── Área do iframe ───────────────────────────────────── */
+        .iframe-container {
+            padding: 0;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            background-color: var(--white);
+            /* Espaço para o painel de seleção fixo na base */
+            padding-bottom: 130px;
+        }
+
+        .iframe-wrapper {
+            position: relative;
+            border: none;
+            border-radius: 0;
+            overflow: hidden;
+            flex: 1;
+            display: none;
+            flex-direction: column;
+            width: 100%;
+            min-height: 75vh;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .iframe-wrapper::after {
+            content: '↕ Role dentro do formulário para ver mais';
+            display: block;
+            text-align: center;
+            font-size: 10px;
+            color: var(--text-muted);
+            padding: 5px;
+            background: #f8f9fa;
+            border-top: 1px solid #eee;
+        }
+
+        iframe {
+            display: block;
+            width: 100%;
+            height: 100%;
+            border: none;
+            flex: 1;
+        }
+
+        footer {
+            margin-top: auto;
+            padding: 15px;
+        }
+
+        /* ── Desktop: menu estático acima do conteúdo ─────────── */
+        @media (min-width: 768px) {
+            .tab-buttons {
+                position: static;
+                transform: none !important;
+                opacity: 1 !important;
+                pointer-events: auto !important;
+                display: grid !important;
+                border-radius: 0;
+                border-top: none;
+                border-bottom: 1px solid rgba(99,102,241,0.12);
+                box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+                padding: 12px 20px;
+                grid-template-columns: repeat(5, 1fr);
+                gap: 10px;
+                background: #ffffff;
+            }
+
+            .tab-buttons.hidden {
+                display: none !important;
+            }
+
+            .tab-btn {
+                font-size: 0.85rem;
+                padding: 12px 10px;
+                min-height: 52px;
+            }
+
+            .tab-btn:nth-last-child(1):nth-child(odd) {
+                grid-column: unset;
+            }
+
+            .iframe-container {
+                padding-bottom: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header id="cabecalho-principal">
+        <a href="materiais.html" class="header-materiais-btn" aria-label="Materiais">
+            <i class="fas fa-book"></i>
+        </a>
+        <div class="logo-placeholder">
+            <img src="./images/logo-qdelicia.png" alt="Qdelícia Frutas">
+        </div>
+        <h1>Estoque</h1>
+        <div id="global-badge" style="display:none;font-size:12px;color:var(--brand);font-weight:600;margin-left:auto;padding:0 12px;white-space:nowrap;"></div>
+        <p id="subtitulo-header" style="display: none;">Registro de estoque diário</p>
+        <button onclick="recarregarPagina()" class="btn-refresh"><i class="fas fa-sync-alt"></i> Atualizar</button>
+    </header>
+
+    <nav class="desktop-nav">
+        <a href="index.html">Início</a>
+        <a href="estoque.html" class="active">Estoque</a>
+        <a href="camera.html">Câmera</a>
+        <a href="materiais.html">Materiais</a>
+        <a href="pedido.html">Sugestão</a>
+        <a href="feriados.html">Feriados</a>
+        <a href="solicitacoes.html">Solicitações</a>
+    </nav>
+
+    <div class="tab-buttons">
+        <button class="tab-btn" id="btn-inicial" onclick="mostrarFormulario('inicial')">
+            <i class="fas fa-exclamation-triangle"></i> Estoque Inicial
+        </button>
+        <button class="tab-btn" id="btn-final" onclick="mostrarFormulario('final')">
+            <i class="fas fa-boxes-stacked"></i> Estoque Final
+        </button>
+        <button class="tab-btn" id="btn-caixas" onclick="mostrarFormulario('caixas')">
+            <i class="fas fa-box-open"></i> Balanço - Geral(Cxs)
+        </button>
+        <button class="tab-btn" id="btn-devolucoes" onclick="mostrarFormulario('devolucoes')">
+            <i class="fas fa-arrow-rotate-left"></i> Devoluções
+        </button>
+        <button class="tab-btn" id="btn-caixas-secas" onclick="mostrarFormulario('caixas-secas')">
+            <i class="fas fa-box"></i> Caixas Secas Para Coleta
+        </button>
+    </div>
+
+    <main class="iframe-container" id="container-estoque">
+        <div class="iframe-wrapper" id="wrapper-estoque" style="display: flex;">
+            <iframe id="iframe-inicial" src="https://script.google.com/macros/s/AKfycbwUewm2F2FK8xBN1ttOHtVDdEeN-tgDiP7vxR-vUEQLMk_4dwDwPP0EiYO4WDVkQoIm/exec?page=Estoque-Inicial" frameborder="0" marginheight="0" marginwidth="0" style="display: none;">
+                Carregando formulário...
+            </iframe>
+            
+            <iframe id="iframe-final" src="https://script.google.com/macros/s/AKfycbwUewm2F2FK8xBN1ttOHtVDdEeN-tgDiP7vxR-vUEQLMk_4dwDwPP0EiYO4WDVkQoIm/exec?page=Estoque-Final" frameborder="0" marginheight="0" marginwidth="0" style="display: none;">
+                Carregando formulário...
+            </iframe>
+
+            <iframe id="iframe-caixas" src="https://script.google.com/macros/s/AKfycbwUewm2F2FK8xBN1ttOHtVDdEeN-tgDiP7vxR-vUEQLMk_4dwDwPP0EiYO4WDVkQoIm/exec?page=Balanco-Caixas" frameborder="0" marginheight="0" marginwidth="0" style="display: none;">
+                Carregando formulário...
+            </iframe>
+
+            <iframe id="iframe-devolucoes" src="https://script.google.com/macros/s/AKfycbwUewm2F2FK8xBN1ttOHtVDdEeN-tgDiP7vxR-vUEQLMk_4dwDwPP0EiYO4WDVkQoIm/exec?page=Devolucoes" frameborder="0" marginheight="0" marginwidth="0" style="display: none;">
+                Carregando formulário...
+            </iframe>
+
+            <iframe id="iframe-caixas-secas" src="https://script.google.com/macros/s/AKfycbwUewm2F2FK8xBN1ttOHtVDdEeN-tgDiP7vxR-vUEQLMk_4dwDwPP0EiYO4WDVkQoIm/exec?page=CaixasSecasColeta" frameborder="0" marginheight="0" marginwidth="0" style="display: none;">
+                Carregando formulário...
+            </iframe>
+        </div>
+    </main>
+
+    <nav class="bottom-tabs">
+        <a href="index.html" class="tab-item"><i class="fas fa-home"></i><span>Início</span></a>
+        <a href="estoque.html" class="tab-item active"><i class="fas fa-boxes-stacked"></i><span>Estoque</span></a>
+        <a href="camera.html" class="tab-item tab-camera"><span class="cam-wrap"><i class="fas fa-camera"></i></span><span>Câmera</span></a>
+        <a href="pedido.html" class="tab-item"><i class="fas fa-file-invoice"></i><span>Sugestão</span></a>
+        <a href="feriados.html" class="tab-item"><i class="fas fa-calendar-alt"></i><span>Feriados</span></a>
+    </nav>
+
+    <div class="tab-indicator" id="tab-indicator">
+        <span class="tab-indicator-label" id="tab-indicator-label">
+            <i class="fas fa-file"></i> <span id="tab-indicator-text">Estoque Inicial</span>
+        </span>
+        <button class="btn-change-tab" onclick="mostrarTabs()"><i class="fas fa-chevron-up"></i> Trocar</button>
+    </div>
+
+
+    <div class="back-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+
+    <script src="global-state.js"></script>
+    <script src="iframe-comm.js"></script>
+    <script src="notifications.js"></script>
+    <script src="script.js"></script>
+    <script src="alert.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof GlobalState !== 'undefined') {
+                GlobalState.showBadge('global-badge');
+                if (!GlobalState.promptIfNeeded()) {
+                    reloadAllWithSelection('#container-estoque');
+                }
+            }
+            setupAutoSend('#container-estoque');
+            const iframes = [
+                { id: 'iframe-inicial', btn: 'btn-inicial' },
+                { id: 'iframe-final', btn: 'btn-final' },
+                { id: 'iframe-caixas', btn: 'btn-caixas' },
+                { id: 'iframe-devolucoes', btn: 'btn-devolucoes' },
+                { id: 'iframe-caixas-secas', btn: 'btn-caixas-secas' }
+            ];
+
+            iframes.forEach(({ id, btn }) => {
+                const iframeEl = document.getElementById(id);
+                const buttonEl = document.getElementById(btn);
+                if (iframeEl && buttonEl) {
+                    const originalHTML = buttonEl.innerHTML;
+                    buttonEl.disabled = true;
+                    buttonEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Carregando...';
+                    iframeEl.onload = () => {
+                        buttonEl.disabled = false;
+                        buttonEl.innerHTML = originalHTML;
+                    };
+                }
+            });
+        });
+
+        function mostrarFormulario(tipo) {
+            const wrapper = document.getElementById('wrapper-estoque');
+            const iframeInicial = document.getElementById('iframe-inicial');
+            const iframeFinal = document.getElementById('iframe-final');
+            const iframeCaixas = document.getElementById('iframe-caixas');
+            const iframeDevolucoes = document.getElementById('iframe-devolucoes');
+            const iframeCaixasSecas = document.getElementById('iframe-caixas-secas');
+            const btnInic = document.getElementById('btn-inicial');
+            const btnFinal = document.getElementById('btn-final');
+            const btnCaixas = document.getElementById('btn-caixas');
+            const btnDevolucoes = document.getElementById('btn-devolucoes');
+            const btnCaixasSecas = document.getElementById('btn-caixas-secas');
+            const subtitulo = document.getElementById('subtitulo-header');
+
+            // Esconder todos os iframes
+            iframeInicial.style.display = 'none';
+            iframeFinal.style.display = 'none';
+            iframeCaixas.style.display = 'none';
+            iframeDevolucoes.style.display = 'none';
+            iframeCaixasSecas.style.display = 'none';
+
+            // Remover a classe active de todos os botões
+            btnInic.classList.remove('active');
+            btnFinal.classList.remove('active');
+            btnCaixas.classList.remove('active');
+            btnDevolucoes.classList.remove('active');
+            btnCaixasSecas.classList.remove('active');
+
+            wrapper.style.display = 'flex';
+
+            switch (tipo) {
+                case 'inicial':
+                    iframeInicial.style.display = 'block';
+                    btnInic.classList.add('active');
+                    subtitulo.textContent = 'Estoque Inicial e Devoluções';
+                    break;
+                case 'final':
+                    iframeFinal.style.display = 'block';
+                    btnFinal.classList.add('active');
+                    subtitulo.textContent = 'Estoque Final';
+                    break;
+                case 'caixas':
+                    iframeCaixas.style.display = 'block';
+                    btnCaixas.classList.add('active');
+                    subtitulo.textContent = 'Balanço de Caixas';
+                    break;
+                case 'devolucoes':
+                    iframeDevolucoes.style.display = 'block';
+                    btnDevolucoes.classList.add('active');
+                    subtitulo.textContent = 'Devoluções';
+                    break;
+                case 'caixas-secas':
+                    iframeCaixasSecas.style.display = 'block';
+                    btnCaixasSecas.classList.add('active');
+                    subtitulo.textContent = 'Caixas Secas para Coleta';
+                    break;
+                default:
+                    break;
+            }
+
+            // Esconder abas e mostrar indicador fixo
+            document.querySelector('.tab-buttons').classList.add('hidden');
+            const indicator = document.getElementById('tab-indicator');
+            indicator.classList.add('active');
+            const labelMap = {
+                'inicial': 'Estoque Inicial',
+                'final': 'Estoque Final',
+                'caixas': 'Balanço de Caixas',
+                'devolucoes': 'Devoluções',
+                'caixas-secas': 'Caixas Secas'
+            };
+            document.getElementById('tab-indicator-text').textContent = labelMap[tipo] || tipo;
+
+            // Scroll suave para o container
+            window.scrollTo({
+                top: document.getElementById('container-estoque').offsetTop - 20,
+                behavior: 'smooth'
+            });
+        }
+
+        function mostrarTabs() {
+            document.querySelector('.tab-buttons').classList.remove('hidden');
+            document.getElementById('tab-indicator').classList.remove('active');
+        }
+
+        function recarregarPagina() {
+            location.reload();
+        }
+    </script>
+</body>
+
+</html>
