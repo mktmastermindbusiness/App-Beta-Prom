@@ -24,7 +24,7 @@
             <img src="./images/logo-qdelicia.png" alt="Qdelícia Frutas">
         </div>
         <h1>Materiais</h1>
-
+        <div id="global-badge" style="display:none;font-size:12px;color:var(--brand);font-weight:600;margin-left:auto;padding:0 12px;white-space:nowrap;"></div>
     </header>
 
     <nav class="desktop-nav">
@@ -229,9 +229,18 @@
         </div>
     </div>
 
+    <script src="global-state.js"></script>
+    <script src="iframe-comm.js"></script>
     <script src="notifications.js"></script>
     <script src="script.js"></script>
     <script>
+        GlobalState.init('https://script.google.com/macros/s/AKfycbyqPaFCjiqYSxW7Im2q3c7v5DlWVGg0CjvUiCfK3yMtHGSUfVxQlH3IJdA6pHZRl0HqLw/exec');
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof GlobalState !== 'undefined') {
+                GlobalState.requireAuth();
+                if (typeof GlobalState.showBadge === 'function') GlobalState.showBadge('global-badge');
+            }
+        });
         document.querySelectorAll('.btn-view-material').forEach(btn => {
             btn.onclick = () => {
                 const title = btn.getAttribute('data-title');

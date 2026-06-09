@@ -4,9 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="refresh" content="3600">
-    <meta name="description" content="Solicitação de material - Qdelícia Frutas.">
+    <meta name="description" content="Solicitação de material - Qdelícia Frutas">
     <title>Solicitações - Qdelícia Frutas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lexend:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <style>
@@ -18,62 +20,211 @@
             overflow-x: hidden;
         }
 
-        .iframe-container {
-            padding: 0;
+        .solic-form {
             flex: 1;
-            display: flex;
-            flex-direction: column;
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 24px 16px 80px;
             width: 100%;
-            background-color: var(--white);
         }
 
-        .iframe-wrapper {
-            position: relative;
-            border: none;
-            border-radius: 0;
-            overflow: hidden;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            min-height: 75vh;
-            -webkit-overflow-scrolling: touch;
+        .solic-form .form-card {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-sm);
+            padding: 24px 20px;
+            margin-bottom: 20px;
         }
 
-        .iframe-wrapper::after {
-            content: '↕ Role dentro do formulário para ver mais';
-            display: block;
-            text-align: center;
-            font-size: 10px;
+        .solic-form .form-card h2 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin: 0 0 4px;
+        }
+
+        .solic-form .form-card p.sub {
+            font-size: 13px;
             color: var(--text-muted);
-            padding: 5px;
-            background: #f8f9fa;
-            border-top: 1px solid #eee;
+            margin: 0 0 20px;
         }
 
-        iframe {
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
             display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-medium);
+            margin-bottom: 5px;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
             width: 100%;
-            height: 100%;
-            border: none;
+            padding: 11px 14px;
+            border: 2px solid var(--tertiary-color);
+            border-radius: var(--border-radius-sm);
+            font-size: 15px;
+            font-family: inherit;
+            background: var(--white);
+            transition: var(--transition-fast);
+            outline: none;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 12px;
+        }
+
+        .form-row .form-group {
             flex: 1;
         }
 
-        footer {
-            margin-top: auto;
-            padding: 15px;
+        .btn-submit {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-submit i {
+            margin-right: 8px;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 24px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            z-index: 9999;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            display: none;
+            max-width: 90%;
+            text-align: center;
+        }
+
+        .toast.show {
+            display: block;
+        }
+
+        .toast.success {
+            background: var(--accent-color);
+        }
+
+        .toast.error {
+            background: var(--danger-color);
+        }
+
+        .toast.info {
+            background: var(--primary-light);
+        }
+
+        .user-info-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px 16px;
+            font-size: 13px;
+            color: var(--text-medium);
+            background: #f8fafc;
+            padding: 10px 16px;
+            border-radius: var(--border-radius-sm);
+            margin-bottom: 20px;
+            border: 1px solid var(--tertiary-color);
+        }
+
+        .user-info-bar span {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .success-check {
+            text-align: center;
+            padding: 30px 0;
+        }
+
+        .success-check i {
+            font-size: 48px;
+            color: var(--accent-color);
+            margin-bottom: 12px;
+        }
+
+        .success-check h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin: 0 0 6px;
+        }
+
+        .success-check p {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin: 0;
         }
 
         @media (max-width: 600px) {
-            .iframe-container {
-                padding: 0;
+            .solic-form {
+                padding: 16px 12px 80px;
+            }
+
+            .solic-form .form-card {
+                padding: 18px 14px;
+            }
+
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+
+            .toast {
+                bottom: 70px;
+                font-size: 13px;
+                padding: 10px 18px;
             }
         }
     </style>
 </head>
 
 <body>
-    <script>_gsShowBlocker()</script>
 
     <header id="cabecalho-principal">
         <a href="materiais.html" class="header-materiais-btn" aria-label="Materiais">
@@ -82,9 +233,8 @@
         <div class="logo-placeholder">
             <img src="./images/logo-qdelicia.png" alt="Qdelícia Frutas">
         </div>
-        <h1 id="welcome-message">Solicitações</h1>
+        <h1>Solicitações</h1>
         <div id="global-badge" style="display:none;font-size:12px;color:var(--brand);font-weight:600;margin-left:auto;padding:0 12px;white-space:nowrap;"></div>
-        <p style="display: none;">Solicitação de Material</p>
         <button onclick="recarregarPagina()" class="btn-refresh"><i class="fas fa-sync-alt"></i> Atualizar</button>
     </header>
 
@@ -98,15 +248,73 @@
         <a href="solicitacoes.html" class="active">Solicitações</a>
     </nav>
 
-    <main class="iframe-container" id="container-solicitacoes">
-        <div class="iframe-wrapper" id="wrapper-solicitacoes" style="display: flex;">
-            <iframe id="iframe-solicitacoes"
-                src="https://script.google.com/macros/s/AKfycbzzMUqWZHpvY-WSUI9ucfKXxDVkCwvXMMLMPrxso8yd7vnSAsgciNE2fNompdK1EMwVoQ/exec"
-                frameborder="0" marginheight="0" marginwidth="0" style="display: block;">
-                Carregando script...
-            </iframe>
+    <main class="solic-form" id="container-solicitacoes">
+
+        <div class="form-card">
+            <h2><i class="fas fa-box-open" style="color:var(--primary-color);margin-right:8px;"></i>Solicitar Material</h2>
+            <p class="sub">Preencha os dados do material que precisa solicitar.</p>
+
+            <div class="user-info-bar" id="user-info-bar">
+                <span id="info-rede-loja">Carregando...</span>
+            </div>
+
+            <form id="form-solicitacao" autocomplete="off">
+                <div class="form-group">
+                    <label for="campo-material">Nome do Material</label>
+                    <input type="text" id="campo-material" name="material" list="lista-materiais" placeholder="Digite ou selecione o material" required>
+                    <datalist id="lista-materiais">
+                        <option value="Sacola Plástica Média">
+                        <option value="Papel Toalha">
+                        <option value="Luva Descartável">
+                        <option value="Detergente">
+                        <option value="Álcool em Gel">
+                        <option value="Saco de Lixo 30L">
+                        <option value="Saco de Lixo 50L">
+                        <option value="Saco de Lixo 100L">
+                        <option value="Rodo">
+                        <option value="Pá">
+                        <option value="Pano de Chão">
+                        <option value="Epicloridrina">
+                    </datalist>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="campo-qtd">Quantidade</label>
+                        <input type="number" id="campo-qtd" name="quantidade" min="1" step="1" placeholder="Ex: 10" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="campo-unidade">Unidade</label>
+                        <select id="campo-unidade" name="unidade" required>
+                            <option value="">Selecione</option>
+                            <option value="Unidade">Unidade</option>
+                            <option value="Pacote">Pacote</option>
+                            <option value="Caixa">Caixa</option>
+                            <option value="Fardo">Fardo</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="campo-obs">Observações <span style="color:var(--text-muted);font-weight:400;">(opcional)</span></label>
+                    <textarea id="campo-obs" name="observacoes" placeholder="Informe detalhes, urgência, etc."></textarea>
+                </div>
+
+                <button type="submit" class="btn-submit" id="btn-enviar">
+                    <i class="fas fa-paper-plane"></i> Enviar Solicitação
+                </button>
+            </form>
         </div>
+
+        <div class="form-card" id="card-historico">
+            <h2><i class="fas fa-history" style="color:var(--text-muted);margin-right:8px;"></i>Últimas Solicitações</h2>
+            <p class="sub" id="historico-placeholder" style="margin-bottom:0;">Nenhuma solicitação encontrada no dispositivo.</p>
+            <div id="lista-historico" style="display:none;"></div>
+        </div>
+
     </main>
+
+    <div class="toast" id="toast"></div>
 
     <nav class="bottom-tabs">
         <a href="index.html" class="tab-item"><i class="fas fa-home"></i><span>Início</span></a>
@@ -125,20 +333,169 @@
     </div>
 
     <script src="global-state.js"></script>
-    <script src="iframe-comm.js"></script>
     <script src="notifications.js"></script>
     <script src="script.js"></script>
 
     <script>
+        var GAS_URL = 'https://script.google.com/macros/s/AKfycbzzMUqWZHpvY-WSUI9ucfKXxDVkCwvXMMLMPrxso8yd7vnSAsgciNE2fNompdK1EMwVoQ/exec';
+
         GlobalState.init('https://script.google.com/macros/s/AKfycbyqPaFCjiqYSxW7Im2q3c7v5DlWVGg0CjvUiCfK3yMtHGSUfVxQlH3IJdA6pHZRl0HqLw/exec');
-        document.addEventListener('DOMContentLoaded', function() {
-            if (typeof GlobalState !== 'undefined') {
-                GlobalState.showBadge('global-badge');
-                GlobalState.promptIfNeeded().then(function() {
-                    IframeComm.reloadAllWithSelection('#wrapper-solicitacoes');
+
+        function showToast(msg, tipo) {
+            var t = document.getElementById('toast');
+            if (!t) return;
+            t.textContent = msg;
+            t.className = 'toast ' + tipo + ' show';
+            clearTimeout(t._hide);
+            t._hide = setTimeout(function () {
+                t.classList.remove('show');
+            }, 4000);
+        }
+
+        function formatarData(d) {
+            return d.getDate().toString().padStart(2, '0') + '/' +
+                (d.getMonth() + 1).toString().padStart(2, '0') + '/' +
+                d.getFullYear() + ' ' +
+                d.getHours().toString().padStart(2, '0') + ':' +
+                d.getMinutes().toString().padStart(2, '0');
+        }
+
+        function carregarHistorico() {
+            var container = document.getElementById('lista-historico');
+            var placeholder = document.getElementById('historico-placeholder');
+            try {
+                var historico = JSON.parse(localStorage.getItem('qd_solic_historico') || '[]');
+                if (historico.length === 0) {
+                    placeholder.style.display = 'block';
+                    container.style.display = 'none';
+                    return;
+                }
+                placeholder.style.display = 'none';
+                container.style.display = 'block';
+                var html = '';
+                historico.slice(-10).reverse().forEach(function (item) {
+                    html += '<div style="padding:10px 0;border-bottom:1px solid var(--tertiary-color);font-size:14px;">' +
+                        '<div style="font-weight:600;color:var(--text-dark);">' + item.material + '</div>' +
+                        '<div style="color:var(--text-muted);font-size:12px;margin-top:2px;">' +
+                        item.quantidade + ' ' + item.unidade +
+                        (item.observacoes ? ' &mdash; ' + item.observacoes : '') +
+                        '</div>' +
+                        '<div style="color:var(--text-muted);font-size:11px;margin-top:2px;">' + item.data + '</div>' +
+                        '</div>';
                 });
+                container.innerHTML = html;
+            } catch (e) {
+                placeholder.style.display = 'block';
+                container.style.display = 'none';
             }
-            IframeComm.setupAutoSend('#wrapper-solicitacoes');
+        }
+
+        function salvarHistorico(material, quantidade, unidade, observacoes) {
+            try {
+                var historico = JSON.parse(localStorage.getItem('qd_solic_historico') || '[]');
+                historico.push({
+                    material: material,
+                    quantidade: quantidade,
+                    unidade: unidade,
+                    observacoes: observacoes || '',
+                    data: formatarData(new Date())
+                });
+                if (historico.length > 50) historico = historico.slice(-50);
+                localStorage.setItem('qd_solic_historico', JSON.stringify(historico));
+                carregarHistorico();
+            } catch (e) {}
+        }
+
+        function getInfo() {
+            var session = GlobalState.getSession();
+            if (session && session.rede) {
+                return {
+                    rede: session.rede,
+                    loja: session.lojaAtual || '',
+                    promotor: session.promotor || session.email || ''
+                };
+            }
+            var sel = GlobalState.getSelection();
+            if (sel && sel.rede) {
+                return {
+                    rede: sel.rede,
+                    loja: sel.loja || '',
+                    promotor: sel.promotor || ''
+                };
+            }
+            return null;
+        }
+
+        function atualizarInfoBar() {
+            var bar = document.getElementById('info-rede-loja');
+            var info = getInfo();
+            if (info) {
+                bar.textContent = info.rede + ' \u203A ' + info.loja + (info.promotor ? ' \u2022 ' + info.promotor : '');
+            } else {
+                bar.textContent = 'Nenhuma rede/loja selecionada.';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            GlobalState.requireAuth();
+            GlobalState.showBadge('global-badge');
+            atualizarInfoBar();
+            carregarHistorico();
+
+            document.getElementById('form-solicitacao').addEventListener('submit', function (e) {
+                e.preventDefault();
+                var btn = document.getElementById('btn-enviar');
+                var info = getInfo();
+                if (!info || !info.rede || !info.loja) {
+                    showToast('Selecione rede e loja antes de solicitar.', 'error');
+                    return;
+                }
+
+                var material = document.getElementById('campo-material').value.trim();
+                var quantidade = document.getElementById('campo-qtd').value.trim();
+                var unidade = document.getElementById('campo-unidade').value;
+                var observacoes = document.getElementById('campo-obs').value.trim();
+
+                if (!material) { showToast('Informe o nome do material.', 'error'); return; }
+                if (!quantidade || parseInt(quantidade) < 1) { showToast('Informe uma quantidade válida.', 'error'); return; }
+                if (!unidade) { showToast('Selecione a unidade.', 'error'); return; }
+
+                var payload = {
+                    action: 'solicitar_material',
+                    rede: info.rede,
+                    loja: info.loja,
+                    nome_promotor: info.promotor,
+                    material: material,
+                    quantidade: parseInt(quantidade),
+                    unidade: unidade,
+                    observacoes: observacoes
+                };
+
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Enviando...';
+                showToast('Enviando solicitação...', 'info');
+
+                fetch(GAS_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                }).then(function () {
+                    showToast('Solicitação enviada com sucesso!', 'success');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar Solicitação';
+                    document.getElementById('form-solicitacao').reset();
+                    salvarHistorico(material, quantidade, unidade, observacoes);
+                }).catch(function (err) {
+                    showToast('Erro ao enviar solicitação: ' + err.message, 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar Solicitação';
+                });
+            });
+        });
+
+        GlobalState.onChange(function () {
+            atualizarInfoBar();
         });
     </script>
 </body>

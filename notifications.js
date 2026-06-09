@@ -85,7 +85,7 @@ const NOTIFICATIONS_CONFIG = {
             }
         },
         solicitacoes: {
-            enabled: false,
+            enabled: true,
             filename: "solicitacoes.html",
             mensagem: "A página de solicitações está temporariamente desativada."
         },

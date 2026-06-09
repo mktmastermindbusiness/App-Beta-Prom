@@ -1,16 +1,6 @@
 (function () {
   'use strict';
 
-  // Standalone blocker — called from inline page scripts BEFORE GlobalState loads
-  window._gsShowBlocker = function () {
-    if (document.getElementById('gs-blocker')) return;
-    var div = document.createElement('div');
-    div.id = 'gs-blocker';
-    div.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:#f8fafc;z-index:99990;display:flex;align-items:center;justify-content:center;flex-direction:column;';
-    div.innerHTML = '<div style="font-size:20px;color:#1e1b4b;font-weight:800;margin-bottom:16px;">Carregando...</div><div style="width:48px;height:48px;border:5px solid #e2e8f0;border-top-color:#6366f1;border-radius:50%;animation:gs-spin 0.8s linear infinite;"></div><style>@keyframes gs-spin{to{transform:rotate(360deg)}}</style>';
-    document.documentElement.appendChild(div);
-  };
-
   var STORAGE_SELECTION = 'qd_global_selection';
   var STORAGE_SESSION = 'qd_session';
   var STORAGE_CONFIG = 'qd_config_cache';
@@ -46,11 +36,18 @@
     return new Date().toISOString().split('T')[0];
   }
 
-  function _fetchConfigViaFrame() {
+  function _fetchFromGas(action, params) {
+    var url = gasUrl + '?page=' + encodeURIComponent(action) + '&fmt=html';
+    if (params) {
+      for (var k in params) {
+        if (params.hasOwnProperty(k))
+          url += '&' + encodeURIComponent(k) + '=' + encodeURIComponent(String(params[k]));
+      }
+    }
     return new Promise(function(resolve, reject) {
       var iframe = document.createElement('iframe');
       iframe.style.cssText = 'display:none;width:0;height:0;border:0;';
-      iframe.src = gasUrl + '?page=json_config&fmt=html';
+      iframe.src = url;
       var timedOut = false;
       var timeout = setTimeout(function() {
         timedOut = true;
@@ -61,7 +58,6 @@
       function handler(e) {
         if (timedOut) return;
         if (!e.data || typeof e.data !== 'object') return;
-        if (e.data.ESTRUTURA_ESTADOS === undefined) return;
         clearTimeout(timeout);
         window.removeEventListener('message', handler);
         if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
@@ -94,7 +90,6 @@
         form.appendChild(inp);
       }
     }
-    // callback marker to tell GAS this is iframe POST
     var cbInp = document.createElement('input');
     cbInp.type = 'hidden';
     cbInp.name = 'callback';
@@ -131,7 +126,7 @@
 
     refreshConfig: function () {
       if (!gasUrl) return Promise.reject('GAS URL not set');
-      return _fetchConfigViaFrame().then(function (data) {
+      return _fetchFromGas('json_config').then(function (data) {
         configCache = data;
         loaded = true;
         try { localStorage.setItem(STORAGE_CONFIG, JSON.stringify(data)); } catch (e) { }
@@ -144,6 +139,8 @@
 
     getConfig: function () { return configCache; },
     isLoaded: function () { return loaded; },
+    fetchFromGas: function (action, params) { return _fetchFromGas(action, params); },
+    postViaForm: function (url, data, callback) { _postViaForm(url, data, callback); },
 
     getSelection: function () {
       try { return JSON.parse(localStorage.getItem(STORAGE_SELECTION)); } catch (e) { return null; }
@@ -252,12 +249,10 @@
       var redeSel = document.getElementById(redeSelectId);
       var lojaSel = document.getElementById(lojaSelectId);
       if (!redeSel) return;
-
       var redes = estruturaToRedes(est);
       redeSel.innerHTML = '<option value="">Selecione a Rede</option>';
       redes.forEach(function (r) { redeSel.innerHTML += '<option value="' + r.replace(/"/g, '&quot;') + '"' + (r === info.rede ? ' selected' : '') + '>' + r + '</option>'; });
       if (redeSel.onchange) redeSel.onchange();
-
       if (!lojaSel) return;
       var lojas = lojasDaRede(est, info.rede);
       lojaSel.innerHTML = '<option value="">Selecione a Loja</option>';
@@ -265,30 +260,27 @@
       if (lojaSel.onchange) lojaSel.onchange();
     },
 
-    promptIfNeeded: function (opts) {
-      opts = opts || {};
-      var self = this;
-
-      if (!this.needsDailyConfirmation()) {
-        if (this.isLoginMode()) {
-          if (this.isLoggedIn()) { self._hidePageBlocker(); return Promise.resolve(); }
-        } else {
-          if (this.getSelection()) { self._hidePageBlocker(); return Promise.resolve(); }
-        }
+    requireAuth: function () {
+      var sel = this.getSelection();
+      var session = this.getSession();
+      if (!sel && !session) {
+        var redirect = encodeURIComponent(window.location.pathname + window.location.search);
+        window.location.replace('login.html?redirect=' + redirect);
+        return false;
       }
-
-      return this.loadConfig().then(function (cfg) {
-        if (!cfg && opts.allowSkip) return;
-        if (!cfg) return self._showBlockerError('Não foi possível carregar os dados da planilha. Verifique sua conexão.');
-        if (cfg.LOGIN_ATIVO) return self._showLoginModal();
-        return self._showEntradaModal();
-      });
+      if (session && !this.isLoggedIn()) {
+        this.clearSession();
+        var redirect2 = encodeURIComponent(window.location.pathname + window.location.search);
+        window.location.replace('login.html?redirect=' + redirect2);
+        return false;
+      }
+      return true;
     },
 
     logout: function () {
       this.clearConfirmation();
       this.clearSession();
-      location.reload();
+      window.location.replace('login.html');
     },
 
     showBadge: function (containerId) {
@@ -310,10 +302,10 @@
       if (!info && !session) return;
       var self = this;
       var html = '<span class="gs-badge" style="display:inline-flex;align-items:center;gap:6px;background:#1e1b4b;color:white;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;white-space:nowrap;cursor:pointer;">';
-      if (info) html += '🏪 ' + info.rede + ' › ' + info.loja;
-      if (session) html += ' 👤 ' + session.email;
-      html += ' <span class="gs-badge-switch" style="font-size:10px;opacity:0.7;">🔄</span>';
-      html += ' <span class="gs-badge-close" style="background:rgba(255,255,255,0.2);border:none;color:white;border-radius:50%;width:20px;height:20px;font-size:12px;cursor:pointer;line-height:1;text-align:center;display:inline-block;">✕</span>';
+      if (info) html += ' ' + info.rede + ' \u203A ' + info.loja;
+      if (session) html += ' \ud83d\udc64 ' + session.email;
+      html += ' <span class="gs-badge-switch" style="font-size:10px;opacity:0.7;">\ud83d\udd04</span>';
+      html += ' <span class="gs-badge-close" style="background:rgba(255,255,255,0.2);border:none;color:white;border-radius:50%;width:20px;height:20px;font-size:12px;cursor:pointer;line-height:1;text-align:center;display:inline-block;">\u2715</span>';
       html += '</span>';
       var div = document.createElement('div');
       div.innerHTML = html;
@@ -341,258 +333,37 @@
       if (this._badgeEl) { this._badgeEl.remove(); this._badgeEl = null; }
     },
 
-    _hidePageBlocker: function () {
-      var el = document.getElementById('gs-blocker');
-      if (el) { el.remove(); }
-    },
-
-    _showBlockerError: function (msg) {
-      var el = document.getElementById('gs-blocker');
-      if (!el) return;
-      el.innerHTML =
-        '<div style="text-align:center;padding:20px;">' +
-        '<div style="font-size:48px;margin-bottom:12px;">⚠️</div>' +
-        '<p style="font-size:16px;color:#dc2626;font-weight:600;margin-bottom:16px;max-width:300px;line-height:1.4;">' + msg + '</p>' +
-        '<button onclick="GlobalState._retryPrompt()" style="padding:12px 28px;background:#1e1b4b;color:white;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;">Tentar novamente</button>' +
-        '</div>';
-    },
-
-    _retryPrompt: function () {
-      this._hidePageBlocker();
-      window._gsShowBlocker();
-      this.promptIfNeeded();
-    },
-
-    _showErrorModal: function (msg) {
-      this._createModal('<div style="text-align:center;padding:20px;"><div style="font-size:48px;margin-bottom:12px;">⚠️</div><p style="font-size:16px;color:#dc2626;font-weight:600;">' + msg + '</p><button onclick="GlobalState._closeModal();GlobalState.promptIfNeeded();" class="gs-btn" style="margin-top:16px;padding:10px 28px;background:#1e1b4b;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;">Tentar novamente</button></div>');
-    },
-
-    _createModal: function (innerHtml) {
-      this._removeModal();
-      var overlay = document.createElement('div');
-      overlay.id = 'gs-modal-overlay';
-      overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(15,23,42,0.7);backdrop-filter:blur(6px);z-index:99999;display:flex;align-items:center;justify-content:center;';
-      var box = document.createElement('div');
-      box.style.cssText = 'background:white;border-radius:20px;padding:28px 24px;width:90%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,0.3);max-height:90vh;overflow-y:auto;';
-      box.innerHTML = innerHtml;
-      overlay.appendChild(box);
-      document.body.appendChild(overlay);
-    },
-
-    _removeModal: function () {
-      var el = document.getElementById('gs-modal-overlay');
-      if (el) el.remove();
-    },
-
-    _closeModal: function () {
-      this._removeModal();
-    },
-
-    _showWelcomeToast: function (promotor, rede, loja) {
-      this._removeToast();
-      var toast = document.createElement('div');
-      toast.id = 'gs-welcome-toast';
-      toast.style.cssText = 'position:fixed;top:80px;left:50%;transform:translateX(-50%);z-index:99999;background:linear-gradient(135deg,#10b981,#059669);color:white;padding:16px 28px;border-radius:16px;font-size:16px;font-weight:700;box-shadow:0 8px 32px rgba(5,150,105,0.4);display:flex;align-items:center;gap:12px;animation:slideDown 0.4s ease;white-space:nowrap;';
-      toast.innerHTML = '✅ Bem-vindo, ' + promotor + '! (' + rede + ' › ' + loja + ')';
-      document.body.appendChild(toast);
-      var self = this;
-      setTimeout(function () { self._removeToast(); }, 2500);
-    },
-
-    _removeToast: function () {
-      var el = document.getElementById('gs-welcome-toast');
-      if (el) el.remove();
-    },
-
-    _showEntradaModal: function () {
-      var est = configCache && configCache.ESTRUTURA_ESTADOS;
-      if (!est) return;
-      var self = this;
-      var redes = estruturaToRedes(est);
-      var saved = this.getSelection();
-      var redeOpts = '<option value="">Selecione a Rede</option>';
-      redes.forEach(function (r) { redeOpts += '<option value="' + r.replace(/"/g, '&quot;') + '"' + (r === (saved && saved.rede) ? ' selected' : '') + '>' + r + '</option>'; });
-
-      this._createModal(
-        '<h2 style="font-size:20px;font-weight:800;color:#1e1b4b;margin:0 0 4px;text-align:center;">👋 Bem-vindo!</h2>' +
-        '<p style="text-align:center;color:#64748b;font-size:14px;margin:0 0 20px;">Selecione sua Rede e Loja</p>' +
-        '<div style="margin-bottom:14px;"><label style="display:block;font-size:13px;font-weight:700;color:#475569;margin-bottom:4px;">Rede</label>' +
-        '<select id="gs-rede" style="width:100%;padding:12px 14px;border:2px solid #e2e8f0;border-radius:10px;font-size:15px;background:white;">' + redeOpts + '</select></div>' +
-        '<div style="margin-bottom:22px;"><label style="display:block;font-size:13px;font-weight:700;color:#475569;margin-bottom:4px;">Loja</label>' +
-        '<select id="gs-loja" disabled style="width:100%;padding:12px 14px;border:2px solid #e2e8f0;border-radius:10px;font-size:15px;background:white;">' +
-        '<option value="">Aguardando rede...</option></select></div>' +
-        '<button id="gs-confirm" disabled style="width:100%;padding:14px;background:linear-gradient(135deg,#1e1b4b,#4f46e5);color:white;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;opacity:0.5;">Entrar</button>'
-      );
-
-      var redeEl = document.getElementById('gs-rede');
-      var lojaEl = document.getElementById('gs-loja');
-      var confirmEl = document.getElementById('gs-confirm');
-
-      // Pré-preenche loja se rede já está pré-selecionada
-      if (saved && saved.rede) {
-        var lojas = lojasDaRede(est, saved.rede);
-        lojas.forEach(function (l) {
-          lojaEl.innerHTML += '<option value="' + l.replace(/"/g, '&quot;') + '"' + (l === saved.loja ? ' selected' : '') + '>' + l + '</option>';
-        });
-        lojaEl.disabled = false;
-        if (saved.loja) {
-          confirmEl.disabled = false;
-          confirmEl.style.opacity = '1';
-        }
-      }
-
-      redeEl.addEventListener('change', function () {
-        var rede = redeEl.value;
-        lojaEl.innerHTML = '<option value="">Selecione a Loja</option>';
-        lojaEl.disabled = !rede;
-        confirmEl.disabled = true;
-        confirmEl.style.opacity = '0.5';
-        if (!rede) return;
-        var lojas = lojasDaRede(est, rede);
-        lojas.forEach(function (l) { lojaEl.innerHTML += '<option value="' + l.replace(/"/g, '&quot;') + '">' + l + '</option>'; });
-      });
-
-      lojaEl.addEventListener('change', function () {
-        var ok = redeEl.value && lojaEl.value;
-        confirmEl.disabled = !ok;
-        confirmEl.style.opacity = ok ? '1' : '0.5';
-      });
-
-      confirmEl.addEventListener('click', function () {
-        var rede = redeEl.value;
-        var loja = lojaEl.value;
-        if (!rede || !loja) return;
-        var p = self.findPromotor(rede, loja);
-        self.setSelection(rede, loja, p ? p.promotor : '', p ? p.estado : '');
-        self.setConfirmedToday();
-        self._hidePageBlocker();
-        self._closeModal();
-        self._showWelcomeToast(p ? p.promotor : '', rede, loja);
-      });
-    },
-
-    _showLoginModal: function () {
-      var self = this;
-      this._createModal(
-        '<h2 style="font-size:20px;font-weight:800;color:#1e1b4b;margin:0 0 4px;text-align:center;">🔐 Login</h2>' +
-        '<p style="text-align:center;color:#64748b;font-size:14px;margin:0 0 20px;">Informe seu e-mail e senha</p>' +
-        '<div style="margin-bottom:12px;"><label style="display:block;font-size:13px;font-weight:700;color:#475569;margin-bottom:4px;">E-mail</label>' +
-        '<input type="email" id="gs-email" placeholder="seu@email.com" style="width:100%;padding:12px 14px;border:2px solid #e2e8f0;border-radius:10px;font-size:15px;background:white;"></div>' +
-        '<div style="margin-bottom:22px;"><label style="display:block;font-size:13px;font-weight:700;color:#475569;margin-bottom:4px;">Senha</label>' +
-        '<input type="password" id="gs-senha" placeholder="••••••" style="width:100%;padding:12px 14px;border:2px solid #e2e8f0;border-radius:10px;font-size:15px;background:white;"></div>' +
-        '<div id="gs-login-error" style="display:none;color:#dc2626;font-size:13px;font-weight:600;text-align:center;margin-bottom:10px;"></div>' +
-        '<button id="gs-login-btn" style="width:100%;padding:14px;background:linear-gradient(135deg,#1e1b4b,#4f46e5);color:white;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;">Entrar</button>'
-      );
-
-      var emailEl = document.getElementById('gs-email');
-      var senhaEl = document.getElementById('gs-senha');
-      var btnEl = document.getElementById('gs-login-btn');
-      var errorEl = document.getElementById('gs-login-error');
-
-      function submitLogin() {
-        var email = emailEl.value.trim();
-        var senha = senhaEl.value;
-        if (!email || !senha) { errorEl.textContent = 'Preencha e-mail e senha.'; errorEl.style.display = 'block'; return; }
-        errorEl.style.display = 'none';
-        btnEl.disabled = true;
-        btnEl.textContent = 'Entrando...';
-        var loginTimeout = setTimeout(function() {
-          errorEl.textContent = 'Erro ao conectar ao servidor. Tente novamente.';
-          errorEl.style.display = 'block';
-          btnEl.disabled = false;
-          btnEl.textContent = 'Entrar';
-        }, 15000);
-
-        _postViaForm(gasUrl, { action: 'validar_login', email: email, senha: senha }, function(data) {
-          clearTimeout(loginTimeout);
-          btnEl.disabled = false;
-          btnEl.textContent = 'Entrar';
-          if (data && data.success) {
-            self.setSession(data.user);
-            self._closeModal();
-            self._showLojaStep(data.user);
-          } else {
-            errorEl.textContent = 'E-mail ou senha inválidos.';
-            errorEl.style.display = 'block';
-          }
-        });
-      }
-
-      btnEl.addEventListener('click', submitLogin);
-      senhaEl.addEventListener('keydown', function (e) { if (e.key === 'Enter') submitLogin(); });
-    },
-
-    _showLojaStep: function (user) {
-      if (!configCache) return;
-      var est = configCache.ESTRUTURA_ESTADOS;
-      if (!est || !est[user.estado] || !est[user.estado][user.rede]) return;
-      var promotorLojas = est[user.estado][user.rede][user.promotor] || [];
-      if (!promotorLojas.length) return;
-
-      var lojasPermitidas = user.lojas && user.lojas.length ? user.lojas.filter(function (l) { return promotorLojas.indexOf(l) !== -1; }) : promotorLojas;
-      var self = this;
-
-      if (lojasPermitidas.length === 1) {
-        user.lojaAtual = lojasPermitidas[0];
-        self.setSession(user);
-        self.setSelection(user.rede, user.lojaAtual, user.promotor, user.estado);
-        self.setConfirmedToday();
-        self._hidePageBlocker();
-        self._showWelcomeToast(user.promotor, user.rede, user.lojaAtual);
-        return;
-      }
-
-      var opts = '';
-      lojasPermitidas.forEach(function (l) { opts += '<option value="' + l.replace(/"/g, '&quot;') + '">' + l + '</option>'; });
-
-      this._createModal(
-        '<h2 style="font-size:20px;font-weight:800;color:#1e1b4b;margin:0 0 4px;text-align:center;">🏪 Selecione a Loja</h2>' +
-        '<p style="text-align:center;color:#64748b;font-size:14px;margin:0 0 8px;">' + user.promotor + ' — ' + user.rede + '</p>' +
-        '<div style="margin-bottom:22px;"><label style="display:block;font-size:13px;font-weight:700;color:#475569;margin-bottom:4px;">Loja</label>' +
-        '<select id="gs-loja-step" style="width:100%;padding:12px 14px;border:2px solid #e2e8f0;border-radius:10px;font-size:15px;background:white;">' + opts + '</select></div>' +
-        '<button id="gs-loja-confirm" style="width:100%;padding:14px;background:linear-gradient(135deg,#1e1b4b,#4f46e5);color:white;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;">Entrar</button>'
-      );
-
-      document.getElementById('gs-loja-confirm').addEventListener('click', function () {
-        user.lojaAtual = document.getElementById('gs-loja-step').value;
-        self.setSession(user);
-        self.setSelection(user.rede, user.lojaAtual, user.promotor, user.estado);
-        self.setConfirmedToday();
-        self._hidePageBlocker();
-        self._closeModal();
-        self._showWelcomeToast(user.promotor, user.rede, user.lojaAtual);
-      });
-    },
-
     _showTrocaLojaModal: function () {
       var info = this.getRedeLojaPromotor();
       if (!info || !info.rede) return;
       var est = configCache && configCache.ESTRUTURA_ESTADOS;
       if (!est) return;
-
       var lojas = this.getUserLojas();
       if (lojas.length < 2) return;
-
       var self = this;
       var opts = '';
       lojas.forEach(function (l) { opts += '<option value="' + l.replace(/"/g, '&quot;') + '"' + (l === info.loja ? ' selected' : '') + '>' + l + '</option>'; });
 
-      this._createModal(
-        '<h2 style="font-size:18px;font-weight:800;color:#1e1b4b;margin:0 0 4px;text-align:center;">🔄 Trocar Loja</h2>' +
+      var overlay = document.createElement('div');
+      overlay.id = 'gs-modal-overlay';
+      overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(15,23,42,0.7);backdrop-filter:blur(6px);z-index:99999;display:flex;align-items:center;justify-content:center;';
+      var box = document.createElement('div');
+      box.style.cssText = 'background:white;border-radius:20px;padding:28px 24px;width:90%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,0.3);';
+      box.innerHTML =
+        '<h2 style="font-size:18px;font-weight:800;color:#1e1b4b;margin:0 0 4px;text-align:center;">Trocar Loja</h2>' +
         '<p style="text-align:center;color:#64748b;font-size:14px;margin:0 0 16px;">' + info.rede + '</p>' +
         '<div style="margin-bottom:18px;"><label style="display:block;font-size:13px;font-weight:700;color:#475569;margin-bottom:4px;">Loja</label>' +
         '<select id="gs-troca-loja" style="width:100%;padding:12px 14px;border:2px solid #e2e8f0;border-radius:10px;font-size:15px;background:white;">' + opts + '</select></div>' +
-        '<button id="gs-troca-confirm" style="width:100%;padding:14px;background:linear-gradient(135deg,#1e1b4b,#4f46e5);color:white;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;">Trocar</button>'
-      );
+        '<button id="gs-troca-confirm" style="width:100%;padding:14px;background:linear-gradient(135deg,#1e1b4b,#4f46e5);color:white;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;">Trocar</button>';
+      overlay.appendChild(box);
+      document.body.appendChild(overlay);
 
       document.getElementById('gs-troca-confirm').addEventListener('click', function () {
         var loja = document.getElementById('gs-troca-loja').value;
-        if (!loja || loja === info.loja) { self._closeModal(); return; }
+        if (!loja || loja === info.loja) { overlay.remove(); return; }
         self.updateSessionLoja(loja);
         self.setConfirmedToday();
-        self._closeModal();
-        var p = self.getRedeLojaPromotor();
-        if (p) self._showWelcomeToast(p.promotor, p.rede, p.loja);
+        overlay.remove();
       });
     }
   };

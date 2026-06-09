@@ -357,8 +357,6 @@
     </style>
 </head>
 <body>
-    <script>_gsShowBlocker()</script>
-
     <header id="cabecalho-principal">
         <a href="materiais.html" class="header-materiais-btn" aria-label="Materiais">
             <i class="fas fa-book"></i>
@@ -534,6 +532,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             if (typeof GlobalState !== 'undefined') {
+                GlobalState.requireAuth();
                 GlobalState.showBadge('global-badge');
             }
         });

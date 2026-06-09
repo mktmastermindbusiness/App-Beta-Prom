@@ -18,11 +18,9 @@
             overflow-x: hidden;
         }
 
-        /* ── Menu de seleção de formulário ────────────────────── */
         .tab-buttons {
-            /* Mobile: painel fixo acima da bottom-bar, slide-up */
             position: fixed;
-            bottom: 62px; /* altura da bottom-bar */
+            bottom: 62px;
             left: 0;
             right: 0;
             z-index: 240;
@@ -40,12 +38,11 @@
                         opacity 0.28s ease;
         }
 
-        /* Classe hidden = slide para baixo em vez de display:none */
         .tab-buttons.hidden {
             transform: translateY(110%);
             opacity: 0;
             pointer-events: none;
-            display: grid !important; /* sobrescreve o display:none global */
+            display: grid !important;
         }
 
         .tab-btn {
@@ -95,56 +92,507 @@
             transform: none;
         }
 
-        /* ── Área do iframe ───────────────────────────────────── */
-        .iframe-container {
-            padding: 0;
+        main {
             flex: 1;
-            display: flex;
-            flex-direction: column;
             width: 100%;
             background-color: var(--white);
-            /* Espaço para o painel de seleção fixo na base */
             padding-bottom: 130px;
         }
 
-        .iframe-wrapper {
-            position: relative;
-            border: none;
-            border-radius: 0;
+        #form-container {
+            max-width: 720px;
+            margin: 0 auto;
+        }
+
+        .form-card {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.06);
             overflow: hidden;
-            flex: 1;
-            display: none;
-            flex-direction: column;
-            width: 100%;
-            min-height: 75vh;
-            -webkit-overflow-scrolling: touch;
         }
 
-        .iframe-wrapper::after {
-            content: '↕ Role dentro do formulário para ver mais';
-            display: block;
+        .form-card-header {
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            color: white;
+            padding: 20px;
             text-align: center;
-            font-size: 10px;
-            color: var(--text-muted);
-            padding: 5px;
-            background: #f8f9fa;
-            border-top: 1px solid #eee;
         }
 
-        iframe {
+        .form-card-header h2 {
+            margin: 0;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .form-card-body {
+            padding: 20px 16px 24px;
+        }
+
+        .welcome-banner {
+            background: #eef2ff;
+            border: 1px solid #c7d2fe;
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-bottom: 16px;
+            text-align: center;
+            font-weight: 600;
+            color: #4338ca;
+            font-size: 1rem;
+        }
+
+        .verificando-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 14px 16px;
+            color: #64748b;
+            font-size: 0.95rem;
+        }
+
+        .delivery-card {
+            margin-top: 16px;
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .delivery-card h3 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: #065f46;
+            margin: 0 0 12px 0;
+        }
+
+        .delivery-card h3 i {
+            margin-right: 6px;
+        }
+
+        .delivery-rows {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        .delivery-rows td {
+            padding: 6px 4px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .delivery-rows td:first-child {
+            font-weight: 600;
+            color: #064e3b;
+        }
+
+        .delivery-rows td:last-child {
+            text-align: right;
+            font-weight: 500;
+        }
+
+        .no-delivery {
+            color: #991b1b;
+            background: #fee2e2;
+            border-radius: 8px;
+            padding: 10px;
+            font-weight: 500;
+            text-align: center;
+            margin-top: 8px;
+        }
+
+        .banner-preenchido {
+            background: #d1fae5;
+            border: 1px solid #6ee7b7;
+            border-radius: 12px;
+            padding: 16px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 14px;
+        }
+
+        .banner-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .banner-icon {
+            font-size: 28px;
+        }
+
+        .banner-text strong {
             display: block;
+            font-size: 0.95rem;
+            color: #065f46;
+        }
+
+        .banner-text span {
+            font-size: 0.82rem;
+            color: #047857;
+        }
+
+        .btn-alterar {
+            background: #047857;
+            color: white;
+            border: none;
+            padding: 9px 18px;
+            border-radius: 9px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+
+        .btn-alterar:hover {
+            background: #065f46;
+        }
+
+        .form-fields {
+            margin-top: 20px;
+        }
+
+        .radio-group {
+            margin: 20px 0 16px;
+            background: #f9fafb;
+            padding: 14px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .radio-group legend {
+            font-weight: 700;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        .radio-group label {
+            margin-right: 20px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .radio-group input[type="radio"] {
+            margin-right: 4px;
+        }
+
+        .erro-desc {
+            display: none;
+            color: #ef4444;
+            font-size: 0.82rem;
+            margin-top: 4px;
+        }
+
+        .group-title {
+            background: #f3f4f6;
+            color: #6366f1;
+            font-weight: 700;
+            padding: 10px 14px;
+            border-radius: 8px;
+            margin: 18px 0 12px;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            border-left: 4px solid #6366f1;
+        }
+
+        .product-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .product-row label {
+            flex: 0 0 130px;
+            font-weight: 500;
+            color: #1f2937;
+        }
+
+        .product-row input {
+            flex: 1;
+            min-width: 0;
+            border-radius: 10px;
+            padding: 12px 14px;
+            border: 1px solid #e5e7eb;
+            font-size: 0.95rem;
+            width: 100%;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .product-row input:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99,102,241,0.2);
+            outline: none;
+        }
+
+        .section-label {
+            color: #6366f1;
+            font-weight: bold;
+            font-size: 0.85rem;
+            margin-top: 20px;
+            border-bottom: 2px solid #c7d2fe;
+            padding-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .form-label {
+            font-weight: 600;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .form-select, .form-control {
+            border-radius: 10px;
+            padding: 12px 14px;
+            border: 1px solid #e5e7eb;
+            font-size: 0.95rem;
+            width: 100%;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-select:focus, .form-control:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99,102,241,0.2);
+            outline: none;
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 60px;
+            font-family: inherit;
+        }
+
+        .btn-send {
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            color: white;
+            font-weight: 700;
+            padding: 14px 20px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 28px;
+            border: none;
+            width: 100%;
+            transition: background 0.2s, transform 0.1s;
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
+
+        .btn-send:hover {
+            background: linear-gradient(135deg, #4f46e5, #4338ca);
+        }
+
+        .btn-send:active {
+            transform: scale(0.98);
+        }
+
+        .btn-send:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .loader {
+            display: none;
+            width: 18px;
+            height: 18px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            border: none;
+            background: rgba(15,23,42,0.6);
+            backdrop-filter: blur(4px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-box {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            width: 90%;
+            max-width: 440px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+        }
+
+        .modal-box h3 {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #1e1b4b;
+            margin: 0 0 16px;
+            text-align: center;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .modal-actions button {
             flex: 1;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            border: none;
+            transition: opacity 0.2s;
         }
 
-        footer {
-            margin-top: auto;
-            padding: 15px;
+        .modal-actions .btn-cancel {
+            background: #f1f5f9;
+            color: #475569;
         }
 
-        /* ── Desktop: menu estático acima do conteúdo ─────────── */
+        .modal-actions .btn-confirm {
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            color: white;
+        }
+
+        .modal-actions .btn-cancel:hover,
+        .modal-actions .btn-confirm:hover {
+            opacity: 0.85;
+        }
+
+        .confirm-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        .confirm-table td {
+            padding: 6px 8px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .confirm-table td:first-child {
+            font-weight: 600;
+            color: #374151;
+            width: 55%;
+        }
+
+        .confirm-table td:last-child {
+            text-align: right;
+        }
+
+        .confirm-section-title {
+            font-weight: 700;
+            color: #6366f1;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            margin: 10px 0 4px;
+        }
+
+        .confirm-totais-box {
+            background: #eef2ff;
+            border: 1px solid #c7d2fe;
+            border-radius: 8px;
+            padding: 10px 14px;
+            margin-top: 12px;
+        }
+
+        .confirm-totais-box .totais-title {
+            font-weight: 700;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: #6366f1;
+            margin-bottom: 6px;
+        }
+
+        .confirm-totais-box table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        .confirm-totais-box td {
+            padding: 4px 6px;
+        }
+
+        .confirm-totais-box td:first-child {
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .confirm-totais-box td:last-child {
+            text-align: right;
+            font-weight: 700;
+            color: #6366f1;
+        }
+
+        .confirm-total {
+            background: #eef2ff;
+            border: 1px solid #c7d2fe;
+            border-radius: 8px;
+            padding: 10px 14px;
+            margin-top: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .confirm-total span:last-child {
+            color: #6366f1;
+            font-size: 1.1rem;
+        }
+
+        .confirm-detail {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-bottom: 12px;
+        }
+
+        @media (max-width: 500px) {
+            .product-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 4px;
+            }
+
+            .product-row label {
+                flex: none;
+                width: 100%;
+                font-size: 0.9rem;
+            }
+
+            .product-row input {
+                width: 100%;
+                padding: 10px 12px;
+            }
+
+            .form-card-header h2 {
+                font-size: 1.1rem;
+            }
+        }
+
         @media (min-width: 768px) {
             .tab-buttons {
                 position: static;
@@ -176,7 +624,7 @@
                 grid-column: unset;
             }
 
-            .iframe-container {
+            main {
                 padding-bottom: 0;
             }
         }
@@ -184,7 +632,6 @@
 </head>
 
 <body>
-    <script>_gsShowBlocker()</script>
 
     <header id="cabecalho-principal">
         <a href="materiais.html" class="header-materiais-btn" aria-label="Materiais">
@@ -227,27 +674,9 @@
         </button>
     </div>
 
-    <main class="iframe-container" id="container-estoque">
-        <div class="iframe-wrapper" id="wrapper-estoque" style="display: flex;">
-            <iframe id="iframe-inicial" src="https://script.google.com/macros/s/AKfycbyP7FP5wZTMIdOe_rYdYq_CQcSfPSLr_t-g0Fq0faVd-HBPuQMxY30emdbMOloatfDL2A/exec?page=Estoque-Inicial" frameborder="0" marginheight="0" marginwidth="0" style="display: none;">
-                Carregando formulário...
-            </iframe>
-            
-            <iframe id="iframe-final" src="https://script.google.com/macros/s/AKfycbyP7FP5wZTMIdOe_rYdYq_CQcSfPSLr_t-g0Fq0faVd-HBPuQMxY30emdbMOloatfDL2A/exec?page=Estoque-Final" frameborder="0" marginheight="0" marginwidth="0" style="display: none;">
-                Carregando formulário...
-            </iframe>
-
-            <iframe id="iframe-caixas" src="https://script.google.com/macros/s/AKfycbyP7FP5wZTMIdOe_rYdYq_CQcSfPSLr_t-g0Fq0faVd-HBPuQMxY30emdbMOloatfDL2A/exec?page=Balanco-Caixas" frameborder="0" marginheight="0" marginwidth="0" style="display: none;">
-                Carregando formulário...
-            </iframe>
-
-            <iframe id="iframe-devolucoes" src="https://script.google.com/macros/s/AKfycbyP7FP5wZTMIdOe_rYdYq_CQcSfPSLr_t-g0Fq0faVd-HBPuQMxY30emdbMOloatfDL2A/exec?page=Devolucoes" frameborder="0" marginheight="0" marginwidth="0" style="display: none;">
-                Carregando formulário...
-            </iframe>
-
-            <iframe id="iframe-caixas-secas" src="https://script.google.com/macros/s/AKfycbyP7FP5wZTMIdOe_rYdYq_CQcSfPSLr_t-g0Fq0faVd-HBPuQMxY30emdbMOloatfDL2A/exec?page=CaixasSecasColeta" frameborder="0" marginheight="0" marginwidth="0" style="display: none;">
-                Carregando formulário...
-            </iframe>
+    <main>
+        <div id="form-container" style="padding:16px;">
+            <p style="text-align:center;color:#64748b;padding:40px 0;">Selecione um formulário acima</p>
         </div>
     </main>
 
@@ -266,138 +695,622 @@
         <button class="btn-change-tab" onclick="mostrarTabs()"><i class="fas fa-chevron-up"></i> Trocar</button>
     </div>
 
-
     <div class="back-to-top">
         <i class="fas fa-arrow-up"></i>
     </div>
+
+    <div id="confirm-modal" class="modal-overlay" style="display:none;"></div>
 
     <script src="global-state.js"></script>
     <script src="iframe-comm.js"></script>
     <script src="notifications.js"></script>
     <script src="script.js"></script>
-
     <script>
-        GlobalState.init('https://script.google.com/macros/s/AKfycbyqPaFCjiqYSxW7Im2q3c7v5DlWVGg0CjvUiCfK3yMtHGSUfVxQlH3IJdA6pHZRl0HqLw/exec');
-        document.addEventListener('DOMContentLoaded', () => {
-            if (typeof GlobalState !== 'undefined') {
-                GlobalState.showBadge('global-badge');
-                GlobalState.promptIfNeeded().then(function() {
-                    IframeComm.reloadAllWithSelection('#container-estoque');
-                });
-            }
-            IframeComm.setupAutoSend('#container-estoque');
-            const iframes = [
-                { id: 'iframe-inicial', btn: 'btn-inicial' },
-                { id: 'iframe-final', btn: 'btn-final' },
-                { id: 'iframe-caixas', btn: 'btn-caixas' },
-                { id: 'iframe-devolucoes', btn: 'btn-devolucoes' },
-                { id: 'iframe-caixas-secas', btn: 'btn-caixas-secas' }
-            ];
+    var GAS_URL_INV = 'https://script.google.com/macros/s/AKfycbyP7FP5wZTMIdOe_rYdYq_CQcSfPSLr_t-g0Fq0faVd-HBPuQMxY30emdbMOloatfDL2A/exec';
+    var GS = GlobalState;
+    GS.init('https://script.google.com/macros/s/AKfycbyqPaFCjiqYSxW7Im2q3c7v5DlWVGg0CjvUiCfK3yMtHGSUfVxQlH3IJdA6pHZRl0HqLw/exec');
 
-            iframes.forEach(({ id, btn }) => {
-                const iframeEl = document.getElementById(id);
-                const buttonEl = document.getElementById(btn);
-                if (iframeEl && buttonEl) {
-                    const originalHTML = buttonEl.innerHTML;
-                    buttonEl.disabled = true;
-                    buttonEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Carregando...';
-                    iframeEl.onload = () => {
-                        buttonEl.disabled = false;
-                        buttonEl.innerHTML = originalHTML;
-                    };
-                }
+    var estoqueConfig = null;
+    var currentTipo = null;
+    var payloadPendente = null;
+    var modoEdicao = false;
+
+    document.addEventListener('DOMContentLoaded', function () {
+        GS.requireAuth();
+        GS.showBadge('global-badge');
+        updateWelcome();
+    });
+
+    function updateWelcome() {
+        var sel = GS.getSelection();
+        var el = document.getElementById('welcome-msg');
+        if (el && sel && sel.promotor) {
+            el.textContent = 'Bem-vindo(a), ' + sel.promotor + '!';
+            el.style.display = 'block';
+        } else if (el) {
+            el.style.display = 'none';
+        }
+    }
+
+    function invFetchFromGas(action, params) {
+        var url = GAS_URL_INV + '?page=' + encodeURIComponent(action) + '&fmt=html';
+        if (params) {
+            for (var k in params) {
+                if (params.hasOwnProperty(k))
+                    url += '&' + encodeURIComponent(k) + '=' + encodeURIComponent(String(params[k]));
+            }
+        }
+        return new Promise(function (resolve, reject) {
+            var iframe = document.createElement('iframe');
+            iframe.style.cssText = 'display:none;width:0;height:0;border:0;';
+            iframe.src = url;
+            var timedOut = false;
+            var timeout = setTimeout(function () {
+                timedOut = true;
+                if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
+                reject('timeout');
+            }, 20000);
+
+            function handler(e) {
+                if (timedOut) return;
+                if (!e.data || typeof e.data !== 'object') return;
+                clearTimeout(timeout);
+                window.removeEventListener('message', handler);
+                if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
+                resolve(e.data);
+            }
+            window.addEventListener('message', handler);
+            document.body.appendChild(iframe);
+        });
+    }
+
+    function loadConfig() {
+        if (estoqueConfig) return Promise.resolve(estoqueConfig);
+        return GS.loadConfig().then(function (cfg) {
+            estoqueConfig = cfg;
+            return cfg;
+        }).catch(function () {
+            return GS.refreshConfig().then(function (cfg) {
+                estoqueConfig = cfg;
+                return cfg;
             });
         });
+    }
 
-        function mostrarFormulario(tipo) {
-            const wrapper = document.getElementById('wrapper-estoque');
-            const iframeInicial = document.getElementById('iframe-inicial');
-            const iframeFinal = document.getElementById('iframe-final');
-            const iframeCaixas = document.getElementById('iframe-caixas');
-            const iframeDevolucoes = document.getElementById('iframe-devolucoes');
-            const iframeCaixasSecas = document.getElementById('iframe-caixas-secas');
-            const btnInic = document.getElementById('btn-inicial');
-            const btnFinal = document.getElementById('btn-final');
-            const btnCaixas = document.getElementById('btn-caixas');
-            const btnDevolucoes = document.getElementById('btn-devolucoes');
-            const btnCaixasSecas = document.getElementById('btn-caixas-secas');
-            const subtitulo = document.getElementById('subtitulo-header');
+    function showToast(msg) {
+        var t = document.getElementById('toast');
+        if (!t) {
+            t = document.createElement('div');
+            t.id = 'toast';
+            t.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1e1b4b;color:white;padding:12px 24px;border-radius:12px;font-weight:600;z-index:9999;transition:opacity 0.3s;';
+            document.body.appendChild(t);
+        }
+        t.textContent = msg;
+        t.style.opacity = '1';
+        setTimeout(function () { t.style.opacity = '0'; }, 3000);
+    }
 
-            // Esconder todos os iframes
-            iframeInicial.style.display = 'none';
-            iframeFinal.style.display = 'none';
-            iframeCaixas.style.display = 'none';
-            iframeDevolucoes.style.display = 'none';
-            iframeCaixasSecas.style.display = 'none';
+    function mostrarFormulario(tipo) {
+        currentTipo = tipo;
+        document.querySelector('.tab-buttons').classList.add('hidden');
+        document.getElementById('tab-indicator').classList.add('active');
+        var labelMap = {
+            'inicial': 'Estoque Inicial',
+            'final': 'Estoque Final',
+            'caixas': 'Balanço de Caixas',
+            'devolucoes': 'Devoluções',
+            'caixas-secas': 'Caixas Secas'
+        };
+        document.getElementById('tab-indicator-text').textContent = labelMap[tipo] || tipo;
 
-            // Remover a classe active de todos os botões
-            btnInic.classList.remove('active');
-            btnFinal.classList.remove('active');
-            btnCaixas.classList.remove('active');
-            btnDevolucoes.classList.remove('active');
-            btnCaixasSecas.classList.remove('active');
+        var container = document.getElementById('form-container');
+        container.innerHTML = '<div class="verificando-box"><div class="spinner-border" role="status"></div><span>Carregando...</span></div>';
 
-            wrapper.style.display = 'flex';
+        loadConfig().then(function (config) {
+            if (tipo === 'inicial' || tipo === 'final') {
+                renderFormInicialFinal(tipo, config);
+            } else if (tipo === 'caixas') {
+                renderFormBalanco(config);
+            } else if (tipo === 'devolucoes') {
+                renderFormDevolucoes(config);
+            } else if (tipo === 'caixas-secas') {
+                renderFormCaixasSecas(config);
+            }
+        }).catch(function () {
+            container.innerHTML = '<p style="color:red;text-align:center;padding:40px;">Erro ao carregar configurações. Tente novamente.</p>';
+        });
 
-            switch (tipo) {
-                case 'inicial':
-                    iframeInicial.style.display = 'block';
-                    btnInic.classList.add('active');
-                    subtitulo.textContent = 'Estoque Inicial e Devoluções';
-                    break;
-                case 'final':
-                    iframeFinal.style.display = 'block';
-                    btnFinal.classList.add('active');
-                    subtitulo.textContent = 'Estoque Final';
-                    break;
-                case 'caixas':
-                    iframeCaixas.style.display = 'block';
-                    btnCaixas.classList.add('active');
-                    subtitulo.textContent = 'Balanço de Caixas';
-                    break;
-                case 'devolucoes':
-                    iframeDevolucoes.style.display = 'block';
-                    btnDevolucoes.classList.add('active');
-                    subtitulo.textContent = 'Devoluções';
-                    break;
-                case 'caixas-secas':
-                    iframeCaixasSecas.style.display = 'block';
-                    btnCaixasSecas.classList.add('active');
-                    subtitulo.textContent = 'Caixas Secas para Coleta';
-                    break;
-                default:
-                    break;
+        window.scrollTo({
+            top: document.getElementById('form-container').offsetTop - 20,
+            behavior: 'smooth'
+        });
+    }
+
+    function getSel() {
+        var sel = GS.getSelection();
+        var session = GS.getSession();
+        if (session && session.rede) {
+            return { rede: session.rede, loja: session.lojaAtual || '', promotor: session.promotor, estado: session.estado };
+        }
+        return sel;
+    }
+
+    function obterInfoLoja(config, rede, loja) {
+        var est = config.ESTRUTURA_ESTADOS;
+        if (!est) return null;
+        for (var e in est) {
+            if (est[e][rede]) {
+                for (var p in est[e][rede]) {
+                    if (est[e][rede][p].indexOf(loja) !== -1) {
+                        return { promotor: p, estado: e };
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    function formatarData(d) {
+        return String(d.getDate()).padStart(2, '0') + '/' + String(d.getMonth() + 1).padStart(2, '0') + '/' + d.getFullYear();
+    }
+
+    function renderBannerPreenchido(dataHora, tipo) {
+        return '<div class="banner-preenchido"><div class="banner-info"><div class="banner-icon">✅</div><div class="banner-text"><strong>' +
+            getTipoLabel(tipo) + ' preenchido</strong><span>Enviado em: ' + (dataHora || '---') +
+            '</span></div></div><button class="btn-alterar" onclick="ativarModoEdicao()">✏️ Alterar preenchimento</button></div>';
+    }
+
+    function getTipoLabel(t) {
+        var m = { 'inicial': 'Estoque Inicial', 'final': 'Estoque Final', 'caixas': 'Balanço de Caixas', 'devolucoes': 'Devoluções', 'caixas-secas': 'Caixas Secas' };
+        return m[t] || t;
+    }
+
+    function getTipoInterno(t) {
+        var m = { 'inicial': 'Estoque Inicial', 'final': 'Estoque Final', 'caixas': 'Balanço', 'devolucoes': 'Devoluções', 'caixas-secas': 'Caixas Secas Coleta' };
+        return m[t] || t;
+    }
+
+    /* ── Estoque Inicial / Final ───────────────────────────────── */
+
+    function renderFormInicialFinal(tipo, config) {
+        var sel = getSel();
+        if (!sel || !sel.rede || !sel.loja) {
+            document.getElementById('form-container').innerHTML =
+                '<div class="form-card"><div class="form-card-header"><h2>' + getTipoLabel(tipo) + '</h2></div><div class="form-card-body"><div class="welcome-banner" id="welcome-msg" style="display:none;"></div><p style="text-align:center;color:#64748b;padding:20px;">Selecione rede e loja no menu superior antes de preencher.</p></div></div>';
+            updateWelcome();
+            return;
+        }
+        var tipoInterno = getTipoInterno(tipo);
+        var info = obterInfoLoja(config, sel.rede, sel.loja);
+        if (!info) {
+            document.getElementById('form-container').innerHTML = '<p style="color:red;text-align:center;padding:20px;">Informações da loja não encontradas.</p>';
+            return;
+        }
+        var promotor = info.promotor;
+        var estado = info.estado;
+
+        var html = '<div class="form-card"><div class="form-card-header"><h2>' + getTipoLabel(tipo) + '</h2></div><div class="form-card-body">';
+        html += '<div class="welcome-banner" id="welcome-msg">Bem-vindo(a), ' + promotor + '!</div>';
+        html += '<p style="font-size:0.9rem;color:#64748b;text-align:center;margin:0 0 8px;">' + sel.rede + ' › ' + sel.loja + '</p>';
+        html += '<div id="preenchido-banner"></div><div id="delivery-info"></div><div id="form-fields"></div></div></div>';
+
+        document.getElementById('form-container').innerHTML = html;
+
+        // Carrega info de entrega e verifica preenchimento
+        Promise.all([
+            invFetchFromGas('obter_info_entrega', { rede: sel.rede, loja: sel.loja }).catch(function () { return null; }),
+            invFetchFromGas('verificar_preenchimento', { rede: sel.rede, loja: sel.loja, tipo: tipoInterno }).catch(function () { return null; })
+        ]).then(function (results) {
+            var infoEntrega = results[0];
+            var verif = results[1];
+            var jaPreenchido = verif && verif.preenchido;
+
+            // Delivery info
+            var deliveryEl = document.getElementById('delivery-info');
+            if (deliveryEl) {
+                deliveryEl.innerHTML = renderDeliveryInfo(config, infoEntrega);
             }
 
-            // Esconder abas e mostrar indicador fixo
-            document.querySelector('.tab-buttons').classList.add('hidden');
-            const indicator = document.getElementById('tab-indicator');
-            indicator.classList.add('active');
-            const labelMap = {
-                'inicial': 'Estoque Inicial',
-                'final': 'Estoque Final',
-                'caixas': 'Balanço de Caixas',
-                'devolucoes': 'Devoluções',
-                'caixas-secas': 'Caixas Secas'
-            };
-            document.getElementById('tab-indicator-text').textContent = labelMap[tipo] || tipo;
+            if (jaPreenchido) {
+                document.getElementById('preenchido-banner').innerHTML = renderBannerPreenchido(verif.dataHora, tipo);
+                document.getElementById('form-fields').innerHTML = '';
+            } else {
+                modoEdicao = false;
+                document.getElementById('form-fields').innerHTML = htmlFormInicialFinal(tipo, false);
+                renderProdutosInicialFinal(config);
+            }
+        });
+    }
 
-            // Scroll suave para o container
-            window.scrollTo({
-                top: document.getElementById('container-estoque').offsetTop - 20,
-                behavior: 'smooth'
+    function renderDeliveryInfo(config, info) {
+        var temEntrega = info && info.temEntrega && info.produtos && Object.values(info.produtos).some(function (v) { return v > 0; });
+        if (!temEntrega) {
+            return '<div class="delivery-card"><h3><i class="fas fa-truck"></i> Entrega prevista para hoje</h3><div class="no-delivery">Sem entregas para hoje</div></div>';
+        }
+        var cols = [];
+        if (config && config.PRODUTOS) {
+            cols = [...new Set(config.PRODUTOS.map(function (p) { return p.coluna_agrupadora; }))];
+        } else {
+            cols = Object.keys(info.produtos || {});
+        }
+        var rows = '';
+        cols.forEach(function (c) {
+            var v = info.produtos[c] || 0;
+            rows += '<tr><td>' + c + '</td><td>' + (v > 0 ? v.toFixed(1) + ' Kg' : '—') + '</td></tr>';
+        });
+        return '<div class="delivery-card"><h3><i class="fas fa-truck"></i> Entrega prevista para hoje</h3><table class="delivery-rows">' + rows + '</table></div>';
+    }
+
+    function htmlFormInicialFinal(tipo, comAlterar) {
+        var lbl = comAlterar ? '✏️ ATUALIZAR ' + getTipoLabel(tipo).toUpperCase() : '📤 ENVIAR ' + getTipoLabel(tipo).toUpperCase();
+        return '<div class="form-fields"><div class="radio-group"><legend class="fw-bold mb-2">Caminhão descarregou? <span style="color:#ef4444;font-size:0.85rem;">*obrigatório</span></legend><label><input class="form-check-input" type="radio" name="descarregou" value="Sim"> Sim</label><label><input class="form-check-input" type="radio" name="descarregou" value="Não"> Não</label><div class="erro-desc" id="erroDescarregou">⚠️ Selecione uma opção antes de continuar.</div></div><div id="containerProdutos" class="product-section"></div><div class="mt-4"><label class="form-label">Observações</label><textarea class="form-control" id="obsField" rows="2" placeholder="Opcional..."></textarea></div><button type="button" class="btn-send" id="btnSubmit" onclick="abrirConfirmacao(\'' + tipo + '\')"><span class="loader" id="loader"></span><span id="btnText">' + lbl + '</span></button></div>';
+    }
+
+    function renderProdutosInicialFinal(config) {
+        var container = document.getElementById('containerProdutos');
+        if (!container) return;
+        container.innerHTML = '';
+        var grupos = [...new Set(config.PRODUTOS.map(function (p) { return p.grupo; }))];
+        grupos.forEach(function (grupo) {
+            var html = '<div class="group-title">' + grupo + '</div>';
+            config.PRODUTOS.filter(function (p) { return p.grupo === grupo; }).forEach(function (p) {
+                html += '<div class="product-row"><label>' + p.nome + '</label><input type="number" class="form-control" name="' + p.id + '" placeholder="0" min="0"></div>';
+            });
+            container.innerHTML += html;
+        });
+    }
+
+    function ativarModoEdicao() {
+        modoEdicao = true;
+        var tipo = currentTipo;
+        var tipoInterno = getTipoInterno(tipo);
+        var sel = getSel();
+        document.getElementById('preenchido-banner').innerHTML = '';
+        document.getElementById('form-fields').innerHTML = htmlFormInicialFinal(tipo, true);
+        renderProdutosInicialFinal(estoqueConfig);
+
+        var formFields = document.getElementById('form-fields');
+        var spinnerHtml = '<div class="verificando-box" id="spinnerCarregamento"><div class="spinner-border" role="status"></div><span>Carregando dados preenchidos...</span></div>';
+        formFields.insertAdjacentHTML('afterbegin', spinnerHtml);
+
+        invFetchFromGas('carregar_dados_preenchidos', { rede: sel.rede, loja: sel.loja, tipo: tipoInterno }).then(function (dados) {
+            var spinner = document.getElementById('spinnerCarregamento');
+            if (spinner) spinner.remove();
+            if (dados) preencherInicialFinal(dados);
+        }).catch(function () {
+            var spinner = document.getElementById('spinnerCarregamento');
+            if (spinner) spinner.remove();
+        });
+    }
+
+    function preencherInicialFinal(dados) {
+        if (dados.descarregou) {
+            var radio = document.querySelector('input[name="descarregou"][value="' + dados.descarregou + '"]');
+            if (radio) radio.checked = true;
+        }
+        if (dados.produtos && estoqueConfig) {
+            estoqueConfig.PRODUTOS.forEach(function (p) {
+                var inp = document.querySelector('#containerProdutos input[name="' + p.id + '"]');
+                if (inp && dados.produtos[p.id] !== undefined) inp.value = dados.produtos[p.id] || '';
             });
         }
+        var obs = document.getElementById('obsField');
+        if (obs && dados.obs !== undefined) obs.value = dados.obs;
+    }
 
-        function mostrarTabs() {
-            document.querySelector('.tab-buttons').classList.remove('hidden');
-            document.getElementById('tab-indicator').classList.remove('active');
+    /* ── Balanço Caixas ────────────────────────────────────────── */
+
+    function renderFormBalanco(config) {
+        var sel = getSel();
+        if (!sel || !sel.rede || !sel.loja) {
+            document.getElementById('form-container').innerHTML =
+                '<div class="form-card"><div class="form-card-header"><h2>Balanço de Caixas</h2></div><div class="form-card-body"><div class="welcome-banner" id="welcome-msg" style="display:none;"></div><p style="text-align:center;color:#64748b;padding:20px;">Selecione rede e loja no menu superior antes de preencher.</p></div></div>';
+            updateWelcome();
+            return;
+        }
+        var info = obterInfoLoja(config, sel.rede, sel.loja);
+        if (!info) {
+            document.getElementById('form-container').innerHTML = '<p style="color:red;text-align:center;padding:20px;">Informações da loja não encontradas.</p>';
+            return;
+        }
+        var promotor = info.promotor;
+
+        var html = '<div class="form-card"><div class="form-card-header"><h2>🧮 Balanço de Caixas</h2></div><div class="form-card-body">';
+        html += '<div class="welcome-banner" id="welcome-msg">Bem-vindo(a), ' + promotor + '!</div>';
+        html += '<p style="font-size:0.9rem;color:#64748b;text-align:center;margin:0 0 8px;">' + sel.rede + ' › ' + sel.loja + '</p>';
+        html += '<div id="preenchido-banner"></div><div id="form-fields"></div></div></div>';
+        document.getElementById('form-container').innerHTML = html;
+
+        invFetchFromGas('verificar_preenchimento', { rede: sel.rede, loja: sel.loja, tipo: 'Balanço' }).then(function (verif) {
+            if (verif && verif.preenchido) {
+                document.getElementById('preenchido-banner').innerHTML = renderBannerPreenchido(verif.dataHora, 'caixas');
+            } else {
+                modoEdicao = false;
+                document.getElementById('form-fields').innerHTML = htmlFormBalanco(false);
+            }
+        }).catch(function () {
+            modoEdicao = false;
+            document.getElementById('form-fields').innerHTML = htmlFormBalanco(false);
+        });
+    }
+
+    function htmlFormBalanco(comAlterar) {
+        var lbl = comAlterar ? '✏️ ATUALIZAR BALANÇO' : '📤 ENVIAR BALANÇO';
+        return '<div class="form-fields"><div class="group-title">Caixas Cheias</div>' +
+            '<div class="product-row"><label>CX P:</label><input type="number" class="form-control" name="cx_p_cheias" placeholder="0" min="0"></div>' +
+            '<div class="product-row"><label>CX G:</label><input type="number" class="form-control" name="cx_g_cheias" placeholder="0" min="0"></div>' +
+            '<div class="product-row"><label>IFCO:</label><input type="number" class="form-control" name="cx_ifco_cheias" placeholder="0" min="0"></div>' +
+            '<div class="group-title">Caixas Secas (Vazias)</div>' +
+            '<div class="product-row"><label>CX P:</label><input type="number" class="form-control" name="cx_p_secas" placeholder="0" min="0"></div>' +
+            '<div class="product-row"><label>CX G:</label><input type="number" class="form-control" name="cx_g_secas" placeholder="0" min="0"></div>' +
+            '<div class="product-row"><label>IFCO:</label><input type="number" class="form-control" name="cx_ifco_secas" placeholder="0" min="0"></div>' +
+            '<div class="mt-3"><label class="form-label text-muted" style="font-size:0.85rem;">Observações</label><textarea class="form-control" id="obsField" rows="2"></textarea></div>' +
+            '<button type="button" class="btn-send" id="btnSubmit" onclick="abrirConfirmacao(\'caixas\')"><span class="loader" id="loader"></span><span id="btnText">' + lbl + '</span></button></div>';
+    }
+
+    /* ── Devoluções ────────────────────────────────────────────── */
+
+    function renderFormDevolucoes(config) {
+        var sel = getSel();
+        if (!sel || !sel.rede || !sel.loja) {
+            document.getElementById('form-container').innerHTML =
+                '<div class="form-card"><div class="form-card-header"><h2>Devoluções</h2></div><div class="form-card-body"><div class="welcome-banner" id="welcome-msg" style="display:none;"></div><p style="text-align:center;color:#64748b;padding:20px;">Selecione rede e loja no menu superior antes de preencher.</p></div></div>';
+            updateWelcome();
+            return;
+        }
+        var info = obterInfoLoja(config, sel.rede, sel.loja);
+        if (!info) {
+            document.getElementById('form-container').innerHTML = '<p style="color:red;text-align:center;padding:20px;">Informações da loja não encontradas.</p>';
+            return;
+        }
+        var promotor = info.promotor;
+
+        var html = '<div class="form-card"><div class="form-card-header"><h2>🔄 Devoluções</h2></div><div class="form-card-body">';
+        html += '<div class="welcome-banner" id="welcome-msg">Bem-vindo(a), ' + promotor + '!</div>';
+        html += '<p style="font-size:0.9rem;color:#64748b;text-align:center;margin:0 0 8px;">' + sel.rede + ' › ' + sel.loja + '</p>';
+        html += '<div id="preenchido-banner"></div><div id="form-fields"></div></div></div>';
+        document.getElementById('form-container').innerHTML = html;
+
+        invFetchFromGas('verificar_preenchimento', { rede: sel.rede, loja: sel.loja, tipo: 'Devoluções' }).then(function (verif) {
+            if (verif && verif.preenchido) {
+                document.getElementById('preenchido-banner').innerHTML = renderBannerPreenchido(verif.dataHora, 'devolucoes');
+            } else {
+                modoEdicao = false;
+                document.getElementById('form-fields').innerHTML = htmlFormDevolucoes(config, false);
+            }
+        }).catch(function () {
+            modoEdicao = false;
+            document.getElementById('form-fields').innerHTML = htmlFormDevolucoes(config, false);
+        });
+    }
+
+    function htmlFormDevolucoes(config, comAlterar) {
+        var lbl = comAlterar ? '✏️ ATUALIZAR DEVOLUÇÕES' : '📤 ENVIAR DEVOLUÇÕES';
+        var colunasUnicas = [...new Set(config.PRODUTOS.map(function (p) { return p.coluna_agrupadora; }))];
+        var produtosHtml = '';
+        colunasUnicas.forEach(function (col) {
+            var name = 'prod_' + col.replace(/ /g, '_');
+            produtosHtml += '<div class="product-row"><label>' + col + ':</label><input type="number" step="0.01" class="form-control" name="' + name + '" placeholder="0.00"></div>';
+        });
+        return '<div class="form-fields"><div class="mt-2"><label class="form-label">Motivo</label><select class="form-select" id="motivoField">' +
+            '<option value="Maturação">Negociada Maturação</option><option value="Encruada">Negociada Encruada</option><option value="Baixa Qualidade">Negociada Baixa Qualidade</option>' +
+            '</select></div><div class="section-label">Lançamento em KG</div><div id="containerProdutos">' + produtosHtml + '</div>' +
+            '<button type="button" class="btn-send" id="btnSubmit" onclick="abrirConfirmacao(\'devolucoes\')"><span class="loader" id="loader"></span><span id="btnText">' + lbl + '</span></button></div>';
+    }
+
+    /* ── Caixas Secas ──────────────────────────────────────────── */
+
+    function renderFormCaixasSecas(config) {
+        var sel = getSel();
+        if (!sel || !sel.rede || !sel.loja) {
+            document.getElementById('form-container').innerHTML =
+                '<div class="form-card"><div class="form-card-header"><h2>Caixas Secas Para Coleta</h2></div><div class="form-card-body"><div class="welcome-banner" id="welcome-msg" style="display:none;"></div><p style="text-align:center;color:#64748b;padding:20px;">Selecione rede e loja no menu superior antes de preencher.</p></div></div>';
+            updateWelcome();
+            return;
+        }
+        var info = obterInfoLoja(config, sel.rede, sel.loja);
+        if (!info) {
+            document.getElementById('form-container').innerHTML = '<p style="color:red;text-align:center;padding:20px;">Informações da loja não encontradas.</p>';
+            return;
+        }
+        var promotor = info.promotor;
+
+        var html = '<div class="form-card"><div class="form-card-header"><h2>📋 Caixas Secas Disponíveis para Coleta</h2></div><div class="form-card-body">';
+        html += '<div class="welcome-banner" id="welcome-msg">Bem-vindo(a), ' + promotor + '!</div>';
+        html += '<p style="font-size:0.9rem;color:#64748b;text-align:center;margin:0 0 8px;">' + sel.rede + ' › ' + sel.loja + '</p>';
+        html += '<div id="preenchido-banner"></div><div id="form-fields"></div></div></div>';
+        document.getElementById('form-container').innerHTML = html;
+
+        invFetchFromGas('verificar_preenchimento', { rede: sel.rede, loja: sel.loja, tipo: 'Caixas Secas Coleta' }).then(function (verif) {
+            if (verif && verif.preenchido) {
+                document.getElementById('preenchido-banner').innerHTML = renderBannerPreenchido(verif.dataHora, 'caixas-secas');
+            } else {
+                modoEdicao = false;
+                document.getElementById('form-fields').innerHTML = htmlFormCaixasSecas(false);
+            }
+        }).catch(function () {
+            modoEdicao = false;
+            document.getElementById('form-fields').innerHTML = htmlFormCaixasSecas(false);
+        });
+    }
+
+    function htmlFormCaixasSecas(comAlterar) {
+        var lbl = comAlterar ? '✏️ ATUALIZAR CAIXAS SECAS' : '📤 ENVIAR CAIXAS SECAS';
+        return '<div class="form-fields"><div class="group-title">Caixas Secas Disponíveis para Coleta</div>' +
+            '<div class="product-row"><label>CX P:</label><input type="number" class="form-control" name="cx_p" placeholder="0" min="0"></div>' +
+            '<div class="product-row"><label>CX G:</label><input type="number" class="form-control" name="cx_g" placeholder="0" min="0"></div>' +
+            '<div class="product-row"><label>CX IFCO:</label><input type="number" class="form-control" name="cx_ifco" placeholder="0" min="0"></div>' +
+            '<div class="mt-3"><label class="form-label text-muted" style="font-size:0.85rem;">Observações</label><textarea class="form-control" id="obsField" rows="2"></textarea></div>' +
+            '<button type="button" class="btn-send" id="btnSubmit" onclick="abrirConfirmacao(\'caixas-secas\')"><span class="loader" id="loader"></span><span id="btnText">' + lbl + '</span></button></div>';
+    }
+
+    /* ── Confirmação e Envio ───────────────────────────────────── */
+
+    function abrirConfirmacao(tipo) {
+        var sel = getSel();
+        if (!sel || !sel.rede || !sel.loja) { showToast('❌ Selecione rede e loja.'); return; }
+        var info = obterInfoLoja(estoqueConfig, sel.rede, sel.loja);
+        if (!info) { showToast('❌ Informações da loja não encontradas.'); return; }
+
+        var payload = {
+            estado: info.estado,
+            rede: sel.rede,
+            nome: info.promotor,
+            loja: sel.loja,
+            tipo: getTipoInterno(tipo),
+            obs: (document.getElementById('obsField') && document.getElementById('obsField').value) || ''
+        };
+
+        var confirmHtml = '<div class="confirm-detail"><b>Loja:</b> ' + sel.rede + ' – ' + sel.loja + ' &nbsp;|&nbsp; <b>Promotor:</b> ' + info.promotor + '</div>';
+
+        if (tipo === 'inicial' || tipo === 'final') {
+            var desc = document.querySelector('input[name="descarregou"]:checked');
+            if (!desc) {
+                var err = document.getElementById('erroDescarregou');
+                if (err) { err.style.display = 'block'; err.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+                return;
+            }
+            document.getElementById('erroDescarregou').style.display = 'none';
+            payload.descarregou = desc.value;
+            payload.motivo = '';
+            confirmHtml += '<p class="confirm-detail"><b>Descarregou?</b> ' + payload.descarregou + '</p>';
+
+            estoqueConfig.PRODUTOS.forEach(function (p) {
+                var inp = document.querySelector('#containerProdutos input[name="' + p.id + '"]');
+                payload[p.id] = parseInt(inp && inp.value) || 0;
+            });
+
+            var grupos = [...new Set(estoqueConfig.PRODUTOS.map(function (p) { return p.grupo; }))];
+            var kgPorColuna = {};
+            grupos.forEach(function (grupo) {
+                var prods = estoqueConfig.PRODUTOS.filter(function (p) { return p.grupo === grupo && payload[p.id] > 0; });
+                if (!prods.length) return;
+                confirmHtml += '<div class="confirm-section-title">' + grupo + '</div><table class="confirm-table">';
+                prods.forEach(function (p) {
+                    var qtd = payload[p.id], kg = qtd * p.peso;
+                    kgPorColuna[p.coluna_agrupadora] = (kgPorColuna[p.coluna_agrupadora] || 0) + kg;
+                    confirmHtml += '<tr><td>' + p.nome + '</td><td>' + qtd + ' cx → ' + kg.toLocaleString('pt-BR') + ' kg</td></tr>';
+                });
+                confirmHtml += '</table>';
+            });
+            if (estoqueConfig.PRODUTOS.every(function (p) { return !payload[p.id]; })) {
+                confirmHtml += '<div style="text-align:center;color:#64748b;font-size:0.9rem;margin:8px 0;">Nenhum produto preenchido.</div>';
+            }
+            var cols = [...new Set(estoqueConfig.PRODUTOS.map(function (p) { return p.coluna_agrupadora; }))].filter(function (c) { return kgPorColuna[c]; });
+            if (cols.length) {
+                confirmHtml += '<div class="confirm-totais-box"><div class="totais-title">KG por produto</div><table>';
+                cols.forEach(function (c) { confirmHtml += '<tr><td>' + c + '</td><td>' + kgPorColuna[c].toLocaleString('pt-BR', { maximumFractionDigits: 1 }) + ' kg</td></tr>'; });
+                confirmHtml += '</table></div>';
+            }
+
+        } else if (tipo === 'devolucoes') {
+            payload.motivo = document.getElementById('motivoField') ? document.getElementById('motivoField').value : '';
+            payload.produtos = {};
+            var colunasUnicas = [...new Set(estoqueConfig.PRODUTOS.map(function (p) { return p.coluna_agrupadora; }))];
+            var totalKg = 0;
+            colunasUnicas.forEach(function (col) {
+                var name = 'prod_' + col.replace(/ /g, '_');
+                var v = parseFloat(document.querySelector('#containerProdutos input[name="' + name + '"]') && document.querySelector('#containerProdutos input[name="' + name + '"]').value) || 0;
+                if (v !== 0) payload.produtos[col] = v;
+            });
+            confirmHtml += '<p class="confirm-detail"><b>Motivo:</b> ' + payload.motivo + '</p>';
+            if (Object.keys(payload.produtos).length > 0) {
+                confirmHtml += '<table class="confirm-table">';
+                Object.keys(payload.produtos).forEach(function (col) {
+                    var kg = payload.produtos[col];
+                    totalKg += kg;
+                    confirmHtml += '<tr><td>' + col + '</td><td>' + kg.toLocaleString('pt-BR', { minimumFractionDigits: 2 }) + ' kg</td></tr>';
+                });
+                confirmHtml += '</table>';
+            } else {
+                confirmHtml += '<div style="text-align:center;color:#64748b;font-size:0.9rem;margin:8px 0;">Nenhum produto preenchido.</div>';
+            }
+            confirmHtml += '<div class="confirm-total"><span>Total em KG</span><span>' + totalKg.toLocaleString('pt-BR', { minimumFractionDigits: 2 }) + ' kg</span></div>';
+
+        } else if (tipo === 'caixas') {
+            ['cx_p_cheias', 'cx_g_cheias', 'cx_ifco_cheias', 'cx_p_secas', 'cx_g_secas', 'cx_ifco_secas'].forEach(function (c) {
+                var inp = document.querySelector('input[name="' + c + '"]');
+                payload[c] = parseInt(inp && inp.value) || 0;
+            });
+            var tCheias = payload.cx_p_cheias + payload.cx_g_cheias + payload.cx_ifco_cheias;
+            var tSecas = payload.cx_p_secas + payload.cx_g_secas + payload.cx_ifco_secas;
+            confirmHtml += '<div class="confirm-section-title">Caixas Cheias</div><table class="confirm-table">';
+            confirmHtml += '<tr><td>CX P</td><td>' + payload.cx_p_cheias + ' un</td></tr><tr><td>CX G</td><td>' + payload.cx_g_cheias + ' un</td></tr><tr><td>IFCO</td><td>' + payload.cx_ifco_cheias + ' un</td></tr>';
+            confirmHtml += '<tr><td><b>Subtotal</b></td><td><b>' + tCheias + ' un</b></td></tr></table>';
+            confirmHtml += '<div class="confirm-section-title">Caixas Secas</div><table class="confirm-table">';
+            confirmHtml += '<tr><td>CX P</td><td>' + payload.cx_p_secas + ' un</td></tr><tr><td>CX G</td><td>' + payload.cx_g_secas + ' un</td></tr><tr><td>IFCO</td><td>' + payload.cx_ifco_secas + ' un</td></tr>';
+            confirmHtml += '<tr><td><b>Subtotal</b></td><td><b>' + tSecas + ' un</b></td></tr></table>';
+            confirmHtml += '<div class="confirm-total"><span>Total de Caixas</span><span>' + (tCheias + tSecas) + ' unidades</span></div>';
+
+        } else if (tipo === 'caixas-secas') {
+            ['cx_p', 'cx_g', 'cx_ifco'].forEach(function (c) {
+                var inp = document.querySelector('input[name="' + c + '"]');
+                payload[c] = parseInt(inp && inp.value) || 0;
+            });
+            var total = payload.cx_p + payload.cx_g + payload.cx_ifco;
+            confirmHtml += '<div class="confirm-section-title">Caixas Secas para Coleta</div><table class="confirm-table">';
+            confirmHtml += '<tr><td>CX P</td><td>' + payload.cx_p + ' un</td></tr><tr><td>CX G</td><td>' + payload.cx_g + ' un</td></tr><tr><td>CX IFCO</td><td>' + payload.cx_ifco + ' un</td></tr>';
+            confirmHtml += '<tr><td><b>Total</b></td><td><b>' + total + ' un</b></td></tr></table>';
         }
 
-        function recarregarPagina() {
-            location.reload();
+        if (payload.obs) {
+            confirmHtml += '<p style="font-size:0.8rem;color:#64748b;margin-top:8px;"><b>Obs:</b> ' + payload.obs + '</p>';
         }
+
+        payloadPendente = payload;
+
+        var modal = document.getElementById('confirm-modal');
+        modal.innerHTML = '<div class="modal-box"><h3>✅ Confirmar ' + getTipoLabel(tipo) + '</h3><div id="confirmBody">' + confirmHtml + '</div><div class="modal-actions"><button class="btn-cancel" onclick="fecharConfirm()">Corrigir</button><button class="btn-confirm" onclick="enviarConfirmado(\'' + tipo + '\')">Confirmar e Enviar</button></div></div>';
+        modal.style.display = 'flex';
+    }
+
+    function fecharConfirm() {
+        document.getElementById('confirm-modal').style.display = 'none';
+        payloadPendente = null;
+    }
+
+    function enviarConfirmado(tipo) {
+        if (!payloadPendente) return;
+        document.getElementById('confirm-modal').style.display = 'none';
+
+        var btn = document.getElementById('btnSubmit');
+        var loader = document.getElementById('loader');
+        var btnText = document.getElementById('btnText');
+        if (btn) btn.disabled = true;
+        if (loader) loader.style.display = 'inline-block';
+        if (btnText) btnText.textContent = 'ENVIANDO...';
+
+        var data = payloadPendente;
+        data.action = 'processar_' + tipo;
+
+        var url = GAS_URL_INV;
+
+        fetch(url, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) }).then(function () {
+            if (loader) loader.style.display = 'none';
+            if (btn) btn.disabled = false;
+            if (btnText) btnText.textContent = modoEdicao ? '✏️ ATUALIZAR' : '📤 ENVIAR';
+            showToast('✅ Enviado com sucesso!');
+            payloadPendente = null;
+            modoEdicao = false;
+            if (tipo) mostrarFormulario(tipo);
+        }).catch(function () {
+            if (loader) loader.style.display = 'none';
+            if (btn) btn.disabled = false;
+            if (btnText) btnText.textContent = modoEdicao ? '✏️ ATUALIZAR' : '📤 ENVIAR';
+            showToast('❌ Erro ao enviar');
+            payloadPendente = null;
+        });
+    }
+
+    function mostrarTabs() {
+        document.querySelector('.tab-buttons').classList.remove('hidden');
+        document.getElementById('tab-indicator').classList.remove('active');
+    }
+
+    function recarregarPagina() {
+        location.reload();
+    }
     </script>
-</body>
 
+</body>
 </html>

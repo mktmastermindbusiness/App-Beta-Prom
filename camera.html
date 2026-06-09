@@ -193,8 +193,6 @@
 </head>
 
 <body class="camera-page">
-    <script>_gsShowBlocker()</script>
-
     <header id="cabecalho-principal">
         <a href="materiais.html" class="header-materiais-btn" aria-label="Materiais">
             <i class="fas fa-book"></i>
@@ -333,6 +331,12 @@
 
     <script>
         GlobalState.init('https://script.google.com/macros/s/AKfycbyqPaFCjiqYSxW7Im2q3c7v5DlWVGg0CjvUiCfK3yMtHGSUfVxQlH3IJdA6pHZRl0HqLw/exec');
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof GlobalState !== 'undefined') {
+                GlobalState.requireAuth();
+                if (typeof GlobalState.showBadge === 'function') GlobalState.showBadge('global-badge');
+            }
+        });
     </script>
     <script src="camera.js"></script>
 </body>
