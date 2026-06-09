@@ -1,6 +1,16 @@
 (function () {
   'use strict';
 
+  // Standalone blocker — called from inline page scripts BEFORE GlobalState loads
+  window._gsShowBlocker = function () {
+    if (document.getElementById('gs-blocker')) return;
+    var div = document.createElement('div');
+    div.id = 'gs-blocker';
+    div.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:#f8fafc;z-index:99990;display:flex;align-items:center;justify-content:center;flex-direction:column;';
+    div.innerHTML = '<div style="font-size:20px;color:#1e1b4b;font-weight:800;margin-bottom:16px;">Carregando...</div><div style="width:48px;height:48px;border:5px solid #e2e8f0;border-top-color:#6366f1;border-radius:50%;animation:gs-spin 0.8s linear infinite;"></div><style>@keyframes gs-spin{to{transform:rotate(360deg)}}</style>';
+    document.documentElement.appendChild(div);
+  };
+
   var STORAGE_SELECTION = 'qd_global_selection';
   var STORAGE_SESSION = 'qd_session';
   var STORAGE_CONFIG = 'qd_config_cache';
@@ -36,15 +46,29 @@
     return new Date().toISOString().split('T')[0];
   }
 
-  function _jsonp(url) {
+  function _fetchConfigViaFrame() {
     return new Promise(function(resolve, reject) {
-      var cb = 'gscb_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6);
-      window[cb] = function(data) { delete window[cb]; if (s.parentNode) s.parentNode.removeChild(s); resolve(data); };
-      var sep = url.indexOf('?') === -1 ? '?' : '&';
-      var s = document.createElement('script');
-      s.src = url + sep + 'callback=' + cb;
-      s.onerror = function() { delete window[cb]; if (s.parentNode) s.parentNode.removeChild(s); reject('JSONP error'); };
-      document.head.appendChild(s);
+      var iframe = document.createElement('iframe');
+      iframe.style.cssText = 'display:none;width:0;height:0;border:0;';
+      iframe.src = gasUrl + '?page=json_config&fmt=html';
+      var timedOut = false;
+      var timeout = setTimeout(function() {
+        timedOut = true;
+        if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
+        reject('timeout');
+      }, 20000);
+
+      function handler(e) {
+        if (timedOut) return;
+        if (!e.data || typeof e.data !== 'object') return;
+        if (e.data.ESTRUTURA_ESTADOS === undefined) return;
+        clearTimeout(timeout);
+        window.removeEventListener('message', handler);
+        if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
+        resolve(e.data);
+      }
+      window.addEventListener('message', handler);
+      document.body.appendChild(iframe);
     });
   }
 
@@ -107,7 +131,7 @@
 
     refreshConfig: function () {
       if (!gasUrl) return Promise.reject('GAS URL not set');
-      return _jsonp(gasUrl + '?page=json_config').then(function (data) {
+      return _fetchConfigViaFrame().then(function (data) {
         configCache = data;
         loaded = true;
         try { localStorage.setItem(STORAGE_CONFIG, JSON.stringify(data)); } catch (e) { }
@@ -247,15 +271,15 @@
 
       if (!this.needsDailyConfirmation()) {
         if (this.isLoginMode()) {
-          if (this.isLoggedIn()) return Promise.resolve();
+          if (this.isLoggedIn()) { self._hidePageBlocker(); return Promise.resolve(); }
         } else {
-          if (this.getSelection()) return Promise.resolve();
+          if (this.getSelection()) { self._hidePageBlocker(); return Promise.resolve(); }
         }
       }
 
       return this.loadConfig().then(function (cfg) {
         if (!cfg && opts.allowSkip) return;
-        if (!cfg) return self._showErrorModal('Não foi possível carregar os dados da planilha. Verifique sua conexão.');
+        if (!cfg) return self._showBlockerError('Não foi possível carregar os dados da planilha. Verifique sua conexão.');
         if (cfg.LOGIN_ATIVO) return self._showLoginModal();
         return self._showEntradaModal();
       });
@@ -317,8 +341,30 @@
       if (this._badgeEl) { this._badgeEl.remove(); this._badgeEl = null; }
     },
 
+    _hidePageBlocker: function () {
+      var el = document.getElementById('gs-blocker');
+      if (el) { el.remove(); }
+    },
+
+    _showBlockerError: function (msg) {
+      var el = document.getElementById('gs-blocker');
+      if (!el) return;
+      el.innerHTML =
+        '<div style="text-align:center;padding:20px;">' +
+        '<div style="font-size:48px;margin-bottom:12px;">⚠️</div>' +
+        '<p style="font-size:16px;color:#dc2626;font-weight:600;margin-bottom:16px;max-width:300px;line-height:1.4;">' + msg + '</p>' +
+        '<button onclick="GlobalState._retryPrompt()" style="padding:12px 28px;background:#1e1b4b;color:white;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;">Tentar novamente</button>' +
+        '</div>';
+    },
+
+    _retryPrompt: function () {
+      this._hidePageBlocker();
+      window._gsShowBlocker();
+      this.promptIfNeeded();
+    },
+
     _showErrorModal: function (msg) {
-      this._createModal('<div style="text-align:center;padding:20px;"><div style="font-size:48px;margin-bottom:12px;">⚠️</div><p style="font-size:16px;color:#dc2626;font-weight:600;">' + msg + '</p><button onclick="GlobalState._closeModal()" class="gs-btn" style="margin-top:16px;padding:10px 28px;background:#1e1b4b;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;">Tentar novamente</button></div>');
+      this._createModal('<div style="text-align:center;padding:20px;"><div style="font-size:48px;margin-bottom:12px;">⚠️</div><p style="font-size:16px;color:#dc2626;font-weight:600;">' + msg + '</p><button onclick="GlobalState._closeModal();GlobalState.promptIfNeeded();" class="gs-btn" style="margin-top:16px;padding:10px 28px;background:#1e1b4b;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer;">Tentar novamente</button></div>');
     },
 
     _createModal: function (innerHtml) {
@@ -419,6 +465,7 @@
         var p = self.findPromotor(rede, loja);
         self.setSelection(rede, loja, p ? p.promotor : '', p ? p.estado : '');
         self.setConfirmedToday();
+        self._hidePageBlocker();
         self._closeModal();
         self._showWelcomeToast(p ? p.promotor : '', rede, loja);
       });
@@ -490,6 +537,7 @@
         self.setSession(user);
         self.setSelection(user.rede, user.lojaAtual, user.promotor, user.estado);
         self.setConfirmedToday();
+        self._hidePageBlocker();
         self._showWelcomeToast(user.promotor, user.rede, user.lojaAtual);
         return;
       }
@@ -510,6 +558,7 @@
         self.setSession(user);
         self.setSelection(user.rede, user.lojaAtual, user.promotor, user.estado);
         self.setConfirmedToday();
+        self._hidePageBlocker();
         self._closeModal();
         self._showWelcomeToast(user.promotor, user.rede, user.lojaAtual);
       });
