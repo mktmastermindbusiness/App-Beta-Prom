@@ -7,14 +7,7 @@ const PHOTO_TYPES = {
     "Avarias": "Avarias",
 };
 
-// APP_DATA removida — dados vêm de GlobalState (ESTRUTURA_ESTADOS)
-
 const selectTipoFoto = document.getElementById('select-tipo-foto');
-const selectPromotor = null;
-const selectRede = document.getElementById('select-rede');
-const selectLoja = document.getElementById('select-loja');
-const selectEstado = null;
-
 const welcomeBanner = document.getElementById('welcome-message');
 const welcomeText = document.getElementById('welcome-text');
 
@@ -55,11 +48,19 @@ const logoImage = new Image();
 logoImage.src = './images/logo-qdelicia.png';
 logoImage.onerror = () => console.error("Erro ao carregar a imagem da logomarca.");
 
-function findPromotorByLoja(rede, loja) {
-    if (typeof GlobalState !== 'undefined' && GlobalState.getConfig()) {
-        return GlobalState.findPromotor(rede, loja);
-    }
-    return null;
+function getCurrentRede() {
+    var sel = GlobalState.getSelection();
+    return sel ? sel.rede : '';
+}
+
+function getCurrentLoja() {
+    var sel = GlobalState.getSelection();
+    return sel ? sel.loja : '';
+}
+
+function getCurrentPromotor() {
+    var sel = GlobalState.getSelection();
+    return sel ? sel.promotor : '';
 }
 
 function getPromotorFullName(promotorNome) {
@@ -84,20 +85,10 @@ function hideWelcomeMessage() {
 }
 
 function saveSelection() {
-    const selection = {
-        promotor: currentPromotor,
-        rede: selectRede.value,
-        loja: selectLoja.value
-    };
-    localStorage.setItem(localStorageKey, JSON.stringify(selection));
     checkCameraAccess();
 }
 
-let currentPromotor = null;
-
-function loadAndPopulateDropdowns() {
-    const savedSelection = JSON.parse(localStorage.getItem(localStorageKey)) || {};
-
+function populateTipoFoto() {
     selectTipoFoto.innerHTML = '<option value="" disabled selected>Selecione o Tipo</option>';
     Object.keys(PHOTO_TYPES).forEach(value => {
         const option = document.createElement('option');
@@ -105,70 +96,27 @@ function loadAndPopulateDropdowns() {
         option.textContent = PHOTO_TYPES[value];
         selectTipoFoto.appendChild(option);
     });
+}
 
-    if (typeof GlobalState !== 'undefined' && GlobalState.getConfig()) {
-        GlobalState.applyToDropdowns('select-rede', 'select-loja');
-        var sel = GlobalState.getSelection();
-        if (sel.rede) {
-            selectRede.value = sel.rede;
-            populateLoja(sel.rede);
-            if (sel.loja) {
-                selectLoja.value = sel.loja;
-                currentPromotor = sel.promotor;
-                if (currentPromotor) showWelcomeMessage(currentPromotor);
-            }
-        }
-    } else {
-        // Fallback: try saved selection
-        if (savedSelection.rede) {
-            selectRede.value = savedSelection.rede;
-            populateLoja(savedSelection.rede);
-            if (savedSelection.loja) {
-                selectLoja.value = savedSelection.loja;
-                currentPromotor = savedSelection.promotor;
-                if (currentPromotor) showWelcomeMessage(currentPromotor);
-            }
-        }
+function initPage() {
+    var sel = GlobalState.getSelection();
+    if (sel && sel.rede && sel.loja) {
+        if (sel.promotor) showWelcomeMessage(sel.promotor);
     }
-
+    populateTipoFoto();
     checkCameraAccess();
     updateActionHighlight();
 }
 
-function populateLoja(rede) {
-    selectLoja.innerHTML = '<option value="" disabled selected>Selecione a sua Loja</option>';
-    hideWelcomeMessage();
-    currentPromotor = null;
-
-    if (typeof GlobalState !== 'undefined' && GlobalState.getConfig()) {
-        var lojas = GlobalState.getLojasForRede(rede);
-        if (lojas && lojas.length > 0) {
-            lojas.forEach(function(loja) {
-                var opt = document.createElement('option');
-                opt.value = loja;
-                opt.textContent = loja;
-                selectLoja.appendChild(opt);
-            });
-            selectLoja.disabled = false;
-        } else {
-            selectLoja.disabled = true;
-        }
-    } else {
-        selectLoja.disabled = true;
-    }
-}
-
 function checkCameraAccess() {
-    const isReady = selectTipoFoto.value && selectRede.value && selectLoja.value;
-
+    const isReady = selectTipoFoto.value && getCurrentRede() && getCurrentLoja();
+    const openCameraBtn = document.getElementById('open-camera-btn');
     if (isReady) {
-        const openCameraBtn = document.getElementById('open-camera-btn');
         openCameraBtn.disabled = false;
         openCameraBtn.innerHTML = '<i class="fas fa-camera"></i> Abrir Câmera';
     } else {
-        const openCameraBtn = document.getElementById('open-camera-btn');
         openCameraBtn.disabled = true;
-        openCameraBtn.innerHTML = '<i class="fas fa-lock"></i> Preencha as Informações';
+        openCameraBtn.innerHTML = '<i class="fas fa-lock"></i> Selecione o Tipo de Foto';
     }
 }
 
@@ -190,26 +138,6 @@ function checkPhotoLimit() {
     }
 }
 
-if (selectRede) {
-    selectRede.addEventListener('change', () => {
-        populateLoja(selectRede.value);
-        saveSelection();
-        updateActionHighlight();
-    });
-}
-
-if (selectLoja) {
-    selectLoja.addEventListener('change', () => {
-        const promotor = findPromotorByLoja(selectRede.value, selectLoja.value);
-        currentPromotor = promotor;
-        if (promotor) {
-            showWelcomeMessage(promotor);
-        }
-        saveSelection();
-        updateActionHighlight();
-    });
-}
-
 if (selectTipoFoto) {
     selectTipoFoto.addEventListener('change', () => {
         saveSelection();
@@ -218,30 +146,14 @@ if (selectTipoFoto) {
 }
 
 function updateActionHighlight() {
-    const selects = [selectRede, selectLoja, selectTipoFoto];
-    selects.forEach(el => {
-        if (el && el.closest('.input-group')) {
-            el.closest('.input-group').classList.remove('highlight-next-step');
-        }
-    });
-
-    const addHighlight = (el) => {
-        if (el && el.closest('.input-group')) {
-            el.closest('.input-group').classList.add('highlight-next-step');
-        }
-    };
-
-    if (!selectRede.value) {
-        addHighlight(selectRede);
-        return;
-    }
-    if (!selectLoja.value || selectLoja.disabled) {
-        addHighlight(selectLoja);
-        return;
+    if (!selectTipoFoto) return;
+    if (selectTipoFoto.closest('.input-group')) {
+        selectTipoFoto.closest('.input-group').classList.remove('highlight-next-step');
     }
     if (!selectTipoFoto.value) {
-        addHighlight(selectTipoFoto);
-        return;
+        if (selectTipoFoto.closest('.input-group')) {
+            selectTipoFoto.closest('.input-group').classList.add('highlight-next-step');
+        }
     }
 }
 
@@ -338,7 +250,7 @@ function capturePhoto() {
         checkPhotoLimit();
         return;
     }
-    if (!selectTipoFoto.value || !selectRede.value || !selectLoja.value) {
+    if (!selectTipoFoto.value || !getCurrentRede() || !getCurrentLoja()) {
         alert("Por favor, preencha todos os campos antes de tirar a foto.");
         return;
     }
@@ -348,10 +260,13 @@ function capturePhoto() {
         return;
     }
 
+    const rede = getCurrentRede();
+    const loja = getCurrentLoja();
+    const promotor = getCurrentPromotor();
     const tipoFotoText = `Tipo: ${selectTipoFoto.value}`;
-    const promotorText = `Promotor: ${currentPromotor || ''}`;
-    const redeText = `Rede: ${selectRede.value}`;
-    const lojaText = `Loja: ${selectLoja.value}`;
+    const promotorText = `Promotor: ${promotor}`;
+    const redeText = `Rede: ${rede}`;
+    const lojaText = `Loja: ${loja}`;
     const dateText = new Date().toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'medium' });
 
     const watermarkLines = [dateText, lojaText, redeText, promotorText, tipoFotoText];
@@ -685,10 +600,13 @@ async function sharePhotos() {
         return;
     }
 
+    const rede = getCurrentRede();
+    const loja = getCurrentLoja();
+    const promotor = getCurrentPromotor();
     const tipoFotoText = `Tipo: ${selectTipoFoto.value}`;
-    const promotorText = `Promotor: ${currentPromotor || ''}`;
-    const redeText = `Rede: ${selectRede.value}`;
-    const lojaText = `Loja: ${selectLoja.value}`;
+    const promotorText = `Promotor: ${promotor}`;
+    const redeText = `Rede: ${rede}`;
+    const lojaText = `Loja: ${loja}`;
     const dateText = new Date().toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'medium' });
 
     const legendaCompartilhada = `*Relatório Fotográfico*\n${tipoFotoText}\n${promotorText}\n${redeText}\n${lojaText}\n${dateText}`;
@@ -743,7 +661,7 @@ try {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    loadAndPopulateDropdowns();
+    initPage();
     loadPhotosFromStorage();
     updateGalleryView();
     updatePhotoCounter();

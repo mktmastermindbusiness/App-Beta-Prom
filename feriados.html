@@ -126,12 +126,13 @@
     <script src="notifications.js"></script>
     <script src="script.js"></script>
     <script>
+        GlobalState.init('https://script.google.com/macros/s/AKfycbwv7QWkSKcu25qqA_rAc8X8LSsTsEomRxBKFE2-CFGpuRh7nM-dfqt3bgvWjGcoLGGAow/exec');
         document.addEventListener('DOMContentLoaded', function() {
             if (typeof GlobalState !== 'undefined') {
                 GlobalState.showBadge('global-badge');
-                if (!GlobalState.promptIfNeeded()) {
+                GlobalState.promptIfNeeded().then(function() {
                     reloadAllWithSelection('#wrapper-feriados');
-                }
+                });
             }
             setupAutoSend('#wrapper-feriados');
             var iframe = document.getElementById('iframe-feriados');

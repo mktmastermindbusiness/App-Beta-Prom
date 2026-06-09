@@ -227,20 +227,6 @@
             </div>
 
             <div class="input-group">
-                <label for="select-rede"><i class="fas fa-store"></i> Rede</label>
-                <select id="select-rede" required>
-                    <option value="" disabled selected>Selecione a sua Rede</option>
-                </select>
-            </div>
-
-            <div class="input-group">
-                <label for="select-loja"><i class="fas fa-map-marker-alt"></i> Loja </label>
-                <select id="select-loja" required disabled>
-                    <option value="" disabled selected>Selecione a sua Loja</option>
-                </select>
-            </div>
-
-            <div class="input-group">
                 <label for="select-tipo-foto"><i class="fas fa-tags"></i> Tipo de Foto</label>
                 <select id="select-tipo-foto" required>
                     <option value="" disabled selected>Selecione o Tipo</option>
@@ -250,8 +236,8 @@
         <hr>
 
         <section class="start-camera-section">
-            <button id="open-camera-btn" disabled>
-                <i class="fas fa-lock"></i> Preencha as Informações Acima
+            <button id="open-camera-btn">
+                <i class="fas fa-camera"></i> Abrir Câmera
             </button>
         </section>
         <div class="gallery">
@@ -344,17 +330,10 @@
     <script src="notifications.js"></script>
     <script src="script.js"></script>
 
-    <script src="camera.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            if (typeof GlobalState !== 'undefined') {
-                GlobalState.showBadge('global-badge');
-                if (!GlobalState.promptIfNeeded()) {
-                    // Load dropdowns from global selection
-                }
-            }
-        });
+        GlobalState.init('https://script.google.com/macros/s/AKfycbwv7QWkSKcu25qqA_rAc8X8LSsTsEomRxBKFE2-CFGpuRh7nM-dfqt3bgvWjGcoLGGAow/exec');
     </script>
+    <script src="camera.js"></script>
 </body>
 
 </html>

@@ -387,20 +387,6 @@
                 <i class="fas fa-user-check"></i>
                 <span id="welcome-text"></span>
             </div>
-
-            <div class="input-group">
-                <label for="rede"><i class="fas fa-store"></i> Rede</label>
-                <select id="rede" class="report-input">
-                    <option value="" disabled selected>Selecione a Rede</option>
-                </select>
-            </div>
-
-            <div class="input-group">
-                <label for="loja"><i class="fas fa-shopping-cart"></i> Loja</label>
-                <select id="loja" class="report-input" disabled>
-                    <option value="" disabled selected>Selecione a Loja</option>
-                </select>
-            </div>
         </section>
 
         <section class="glass-section">
@@ -540,6 +526,9 @@
     <script src="notifications.js"></script>
     <script src="config.js"></script>
     <script src="script.js"></script>
+    <script>
+        GlobalState.init('https://script.google.com/macros/s/AKfycbwv7QWkSKcu25qqA_rAc8X8LSsTsEomRxBKFE2-CFGpuRh7nM-dfqt3bgvWjGcoLGGAow/exec');
+    </script>
     <script src="pedido.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {

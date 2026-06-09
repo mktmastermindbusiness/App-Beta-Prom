@@ -82,7 +82,7 @@
             <img src="./images/logo-qdelicia.png" alt="Qdelícia Frutas">
         </div>
         <h1 id="welcome-message">Solicitações</h1>
-
+        <div id="global-badge" style="display:none;font-size:12px;color:var(--brand);font-weight:600;margin-left:auto;padding:0 12px;white-space:nowrap;"></div>
         <p style="display: none;">Solicitação de Material</p>
         <button onclick="recarregarPagina()" class="btn-refresh"><i class="fas fa-sync-alt"></i> Atualizar</button>
     </header>
@@ -123,9 +123,23 @@
         <i class="fas fa-arrow-up"></i>
     </div>
 
+    <script src="global-state.js"></script>
+    <script src="iframe-comm.js"></script>
     <script src="notifications.js"></script>
     <script src="script.js"></script>
     <script src="alert.js"></script>
+    <script>
+        GlobalState.init('https://script.google.com/macros/s/AKfycbwv7QWkSKcu25qqA_rAc8X8LSsTsEomRxBKFE2-CFGpuRh7nM-dfqt3bgvWjGcoLGGAow/exec');
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof GlobalState !== 'undefined') {
+                GlobalState.showBadge('global-badge');
+                GlobalState.promptIfNeeded().then(function() {
+                    reloadAllWithSelection('#wrapper-solicitacoes');
+                });
+            }
+            setupAutoSend('#wrapper-solicitacoes');
+        });
+    </script>
 </body>
 
 </html>

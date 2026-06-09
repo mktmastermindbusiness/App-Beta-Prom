@@ -1,9 +1,4 @@
-// APP_DATA removida — dados vêm de GlobalState (ESTRUTURA_ESTADOS)
-
 document.addEventListener('DOMContentLoaded', () => {
-    const selectRede = document.getElementById('rede');
-    const selectLoja = document.getElementById('loja');
-
     const productGrid = document.getElementById('product-grid');
     const addProductTrigger = document.getElementById('add-product-trigger');
     const shareWhatsappBtn = document.getElementById('share-whatsapp');
@@ -35,14 +30,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let products = [];
     let editingIndex = -1;
-    let currentPromotor = null;
 
-    function findPromotorByLoja(rede, loja) {
-        if (typeof GlobalState !== 'undefined' && GlobalState.getConfig()) {
-            var result = GlobalState.findPromotor(rede, loja);
-            return result ? result.promotor : null;
-        }
-        return null;
+    function getGlobalSel() {
+        if (typeof GlobalState === 'undefined') return null;
+        return GlobalState.getSelection();
+    }
+
+    function getCurrentRede() {
+        var s = getGlobalSel();
+        return s ? s.rede : '';
+    }
+
+    function getCurrentLoja() {
+        var s = getGlobalSel();
+        return s ? s.loja : '';
+    }
+
+    function getCurrentPromotor() {
+        var s = getGlobalSel();
+        return s ? s.promotor : '';
     }
 
     function getPromotorFullName(promotorNome) {
@@ -62,76 +68,12 @@ document.addEventListener('DOMContentLoaded', () => {
         welcomeBanner.style.display = 'flex';
     }
 
-    function hideWelcomeMessage() {
-        welcomeBanner.style.display = 'none';
-    }
-
-    function populateDropdown(select, items, placeholder) {
-        select.innerHTML = `<option value="" disabled selected>${placeholder}</option>`;
-        if (Array.isArray(items)) {
-            items.forEach(item => {
-                const opt = document.createElement('option');
-                opt.value = item;
-                opt.textContent = item;
-                select.appendChild(opt);
-            });
-        } else if (typeof items === 'object' && items !== null) {
-            Object.keys(items).forEach(key => {
-                const opt = document.createElement('option');
-                opt.value = key;
-                opt.textContent = key;
-                select.appendChild(opt);
-            });
+    function initWelcome() {
+        var sel = getGlobalSel();
+        if (sel && sel.rede && sel.loja) {
+            if (sel.promotor) showWelcomeMessage(sel.promotor);
         }
-        select.disabled = (select.options.length <= 1);
     }
-
-    if (typeof GlobalState !== 'undefined' && GlobalState.getConfig()) {
-        GlobalState.applyToDropdowns('rede', 'loja');
-        var sel = GlobalState.getSelection();
-        if (sel && sel.rede) {
-            selectRede.value = sel.rede;
-            populateLojaFromGlobal(sel.rede);
-            if (sel.loja) {
-                selectLoja.value = sel.loja;
-                currentPromotor = sel.promotor;
-                if (currentPromotor) showWelcomeMessage(currentPromotor);
-            }
-        }
-    } else {
-        selectRede.disabled = false;
-    }
-
-    selectRede.addEventListener('change', function() {
-        selectLoja.innerHTML = '<option value="" disabled selected>Selecione a Loja</option>';
-        hideWelcomeMessage();
-        currentPromotor = null;
-        var rede = selectRede.value;
-        if (rede && typeof GlobalState !== 'undefined' && GlobalState.getConfig()) {
-            populateLojaFromGlobal(rede);
-        } else {
-            selectLoja.disabled = true;
-        }
-    });
-
-    function populateLojaFromGlobal(rede) {
-        var lojas = GlobalState.getLojasForRede(rede);
-        lojas.forEach(function(l) {
-            var opt = document.createElement('option');
-            opt.value = l;
-            opt.textContent = l;
-            selectLoja.appendChild(opt);
-        });
-        selectLoja.disabled = (lojas.length === 0);
-    }
-
-    selectLoja.addEventListener('change', () => {
-        const promotor = findPromotorByLoja(selectRede.value, selectLoja.value);
-        currentPromotor = promotor;
-        if (promotor) {
-            showWelcomeMessage(promotor);
-        }
-    });
 
     function renderProducts() {
         productGrid.innerHTML = '';
@@ -222,9 +164,9 @@ document.addEventListener('DOMContentLoaded', () => {
         products.forEach(p => allProducts.push(p));
 
         return {
-            rede: selectRede.value,
-            promotor: currentPromotor || '',
-            loja: selectLoja.value,
+            rede: getCurrentRede(),
+            promotor: getCurrentPromotor(),
+            loja: getCurrentLoja(),
             products: allProducts,
             date: new Date().toLocaleDateString('pt-BR')
         };
@@ -309,4 +251,6 @@ document.addEventListener('DOMContentLoaded', () => {
             pdfEl.style.display = 'none';
         }
     };
+
+    initWelcome();
 });
