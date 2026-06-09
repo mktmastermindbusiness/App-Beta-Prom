@@ -733,7 +733,7 @@
     }
 
     function invFetchFromGas(action, params) {
-        var url = GAS_URL_INV + '?page=' + encodeURIComponent(action) + '&fmt=html';
+        var url = GAS_URL_INV + '?page=' + encodeURIComponent(action);
         if (params) {
             for (var k in params) {
                 if (params.hasOwnProperty(k))
@@ -741,26 +741,32 @@
             }
         }
         return new Promise(function (resolve, reject) {
-            var iframe = document.createElement('iframe');
-            iframe.style.cssText = 'display:none;width:0;height:0;border:0;';
-            iframe.src = url;
+            var cbName = 'gs_cb_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+            url += '&callback=' + encodeURIComponent(cbName);
             var timedOut = false;
             var timeout = setTimeout(function () {
                 timedOut = true;
-                if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
+                if (window[cbName]) { delete window[cbName]; }
+                if (script.parentNode) script.parentNode.removeChild(script);
                 reject('timeout');
             }, 20000);
-
-            function handler(e) {
+            window[cbName] = function (data) {
                 if (timedOut) return;
-                if (!e.data || typeof e.data !== 'object') return;
                 clearTimeout(timeout);
-                window.removeEventListener('message', handler);
-                if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
-                resolve(e.data);
-            }
-            window.addEventListener('message', handler);
-            document.body.appendChild(iframe);
+                delete window[cbName];
+                if (script.parentNode) script.parentNode.removeChild(script);
+                resolve(data);
+            };
+            var script = document.createElement('script');
+            script.src = url;
+            script.onerror = function () {
+                if (timedOut) return;
+                clearTimeout(timeout);
+                delete window[cbName];
+                if (script.parentNode) script.parentNode.removeChild(script);
+                reject('script error');
+            };
+            document.head.appendChild(script);
         });
     }
 

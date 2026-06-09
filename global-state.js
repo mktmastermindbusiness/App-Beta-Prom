@@ -11,7 +11,7 @@
   var loaded = false;
   var loadPromise = null;
   var changeCallbacks = [];
-  var gasUrl = '';
+  var gasUrl = 'https://script.google.com/macros/s/AKfycbzJgx-MraCUC0yqzxkwoS0OXtP4XL3o2n5NGOZXrKrWzN_Xw2t6bwthc7_n0TL-a0M2sA/exec';
 
   function estruturaToRedes(est) {
     var redes = [];
@@ -37,74 +37,68 @@
   }
 
   function _fetchFromGas(action, params) {
-    var url = gasUrl + '?page=' + encodeURIComponent(action) + '&fmt=html';
-    if (params) {
-      for (var k in params) {
-        if (params.hasOwnProperty(k))
-          url += '&' + encodeURIComponent(k) + '=' + encodeURIComponent(String(params[k]));
-      }
-    }
     return new Promise(function(resolve, reject) {
-      var iframe = document.createElement('iframe');
-      iframe.style.cssText = 'display:none;width:0;height:0;border:0;';
-      iframe.src = url;
-      var timedOut = false;
+      var url = gasUrl + '?page=' + encodeURIComponent(action);
+      if (params) {
+        for (var k in params) {
+          if (params.hasOwnProperty(k))
+            url += '&' + encodeURIComponent(k) + '=' + encodeURIComponent(String(params[k]));
+        }
+      }
+      var cbName = 'gs_cb_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+      url += '&callback=' + encodeURIComponent(cbName);
       var timeout = setTimeout(function() {
-        timedOut = true;
-        if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
+        if (window[cbName]) { delete window[cbName]; }
+        if (script.parentNode) script.parentNode.removeChild(script);
         reject('timeout');
       }, 20000);
-
-      function handler(e) {
-        if (timedOut) return;
-        if (!e.data || typeof e.data !== 'object') return;
+      window[cbName] = function(data) {
         clearTimeout(timeout);
-        window.removeEventListener('message', handler);
-        if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
-        resolve(e.data);
-      }
-      window.addEventListener('message', handler);
-      document.body.appendChild(iframe);
+        delete window[cbName];
+        if (script.parentNode) script.parentNode.removeChild(script);
+        resolve(data);
+      };
+      var script = document.createElement('script');
+      script.src = url;
+      script.onerror = function() {
+        clearTimeout(timeout);
+        delete window[cbName];
+        if (script.parentNode) script.parentNode.removeChild(script);
+        reject('script error');
+      };
+      document.head.appendChild(script);
     });
   }
 
   function _postViaForm(url, data, callback) {
-    var iframe = document.getElementById('gs-post-frame');
-    if (!iframe) {
-      iframe = document.createElement('iframe');
-      iframe.id = 'gs-post-frame';
-      iframe.style.display = 'none';
-      document.body.appendChild(iframe);
-    }
-    var form = document.createElement('form');
-    form.method = 'POST';
-    form.action = url;
-    form.target = 'gs-post-frame';
-    form.enctype = 'application/x-www-form-urlencoded';
+    var params = [];
     for (var k in data) {
-      if (data.hasOwnProperty(k)) {
-        var inp = document.createElement('input');
-        inp.type = 'hidden';
-        inp.name = k;
-        inp.value = typeof data[k] === 'object' ? JSON.stringify(data[k]) : String(data[k]);
-        form.appendChild(inp);
-      }
+      if (data.hasOwnProperty(k))
+        params.push(encodeURIComponent(k) + '=' + encodeURIComponent(String(data[k])));
     }
-    var cbInp = document.createElement('input');
-    cbInp.type = 'hidden';
-    cbInp.name = 'callback';
-    cbInp.value = 'iframe';
-    form.appendChild(cbInp);
-    document.body.appendChild(form);
-
-    function handler(e) {
-      if (!e.data || typeof e.data !== 'object') return;
-      window.removeEventListener('message', handler);
-      callback(e.data);
-    }
-    window.addEventListener('message', handler);
-    form.submit();
-    document.body.removeChild(form);
+    var cbName = 'gs_cb_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+    params.push('callback=' + encodeURIComponent(cbName));
+    var fullUrl = url + '?' + params.join('&');
+    var timeout = setTimeout(function() {
+      if (window[cbName]) { delete window[cbName]; }
+      if (script.parentNode) script.parentNode.removeChild(script);
+      callback({success: false, error: 'timeout'});
+    }, 20000);
+    window[cbName] = function(response) {
+      clearTimeout(timeout);
+      delete window[cbName];
+      if (script.parentNode) script.parentNode.removeChild(script);
+      callback(response);
+    };
+    var script = document.createElement('script');
+    script.src = fullUrl;
+    script.onerror = function() {
+      clearTimeout(timeout);
+      delete window[cbName];
+      if (script.parentNode) script.parentNode.removeChild(script);
+      callback({success: false, error: 'network error'});
+    };
+    document.head.appendChild(script);
   }
 
   window.GlobalState = {
