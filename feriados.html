@@ -131,10 +131,10 @@
             if (typeof GlobalState !== 'undefined') {
                 GlobalState.showBadge('global-badge');
                 GlobalState.promptIfNeeded().then(function() {
-                    reloadAllWithSelection('#wrapper-feriados');
+                    IframeComm.reloadAllWithSelection('#wrapper-feriados');
                 });
             }
-            setupAutoSend('#wrapper-feriados');
+            IframeComm.setupAutoSend('#wrapper-feriados');
             var iframe = document.getElementById('iframe-feriados');
             iframe.onload = function() {
                 // iframe loaded

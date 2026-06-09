@@ -274,17 +274,17 @@
     <script src="iframe-comm.js"></script>
     <script src="notifications.js"></script>
     <script src="script.js"></script>
-    <script src="alert.js"></script>
+
     <script>
         GlobalState.init('https://script.google.com/macros/s/AKfycbwv7QWkSKcu25qqA_rAc8X8LSsTsEomRxBKFE2-CFGpuRh7nM-dfqt3bgvWjGcoLGGAow/exec');
         document.addEventListener('DOMContentLoaded', () => {
             if (typeof GlobalState !== 'undefined') {
                 GlobalState.showBadge('global-badge');
                 GlobalState.promptIfNeeded().then(function() {
-                    reloadAllWithSelection('#container-estoque');
+                    IframeComm.reloadAllWithSelection('#container-estoque');
                 });
             }
-            setupAutoSend('#container-estoque');
+            IframeComm.setupAutoSend('#container-estoque');
             const iframes = [
                 { id: 'iframe-inicial', btn: 'btn-inicial' },
                 { id: 'iframe-final', btn: 'btn-final' },

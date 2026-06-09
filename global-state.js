@@ -36,6 +36,58 @@
     return new Date().toISOString().split('T')[0];
   }
 
+  function _jsonp(url) {
+    return new Promise(function(resolve, reject) {
+      var cb = 'gscb_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6);
+      window[cb] = function(data) { delete window[cb]; if (s.parentNode) s.parentNode.removeChild(s); resolve(data); };
+      var sep = url.indexOf('?') === -1 ? '?' : '&';
+      var s = document.createElement('script');
+      s.src = url + sep + 'callback=' + cb;
+      s.onerror = function() { delete window[cb]; if (s.parentNode) s.parentNode.removeChild(s); reject('JSONP error'); };
+      document.head.appendChild(s);
+    });
+  }
+
+  function _postViaForm(url, data, callback) {
+    var iframe = document.getElementById('gs-post-frame');
+    if (!iframe) {
+      iframe = document.createElement('iframe');
+      iframe.id = 'gs-post-frame';
+      iframe.style.display = 'none';
+      document.body.appendChild(iframe);
+    }
+    var form = document.createElement('form');
+    form.method = 'POST';
+    form.action = url;
+    form.target = 'gs-post-frame';
+    form.enctype = 'application/x-www-form-urlencoded';
+    for (var k in data) {
+      if (data.hasOwnProperty(k)) {
+        var inp = document.createElement('input');
+        inp.type = 'hidden';
+        inp.name = k;
+        inp.value = typeof data[k] === 'object' ? JSON.stringify(data[k]) : String(data[k]);
+        form.appendChild(inp);
+      }
+    }
+    // callback marker to tell GAS this is iframe POST
+    var cbInp = document.createElement('input');
+    cbInp.type = 'hidden';
+    cbInp.name = 'callback';
+    cbInp.value = 'iframe';
+    form.appendChild(cbInp);
+    document.body.appendChild(form);
+
+    function handler(e) {
+      if (!e.data || typeof e.data !== 'object') return;
+      window.removeEventListener('message', handler);
+      callback(e.data);
+    }
+    window.addEventListener('message', handler);
+    form.submit();
+    document.body.removeChild(form);
+  }
+
   window.GlobalState = {
     init: function (url) {
       gasUrl = url;
@@ -55,7 +107,7 @@
 
     refreshConfig: function () {
       if (!gasUrl) return Promise.reject('GAS URL not set');
-      return fetch(gasUrl + '?page=json_config').then(function (r) { return r.json(); }).then(function (data) {
+      return _jsonp(gasUrl + '?page=json_config').then(function (data) {
         configCache = data;
         loaded = true;
         try { localStorage.setItem(STORAGE_CONFIG, JSON.stringify(data)); } catch (e) { }
@@ -397,26 +449,26 @@
         errorEl.style.display = 'none';
         btnEl.disabled = true;
         btnEl.textContent = 'Entrando...';
-        fetch(gasUrl, { method: 'POST', body: JSON.stringify({ action: 'validar_login', email: email, senha: senha }) })
-          .then(function (r) { return r.json(); })
-          .then(function (data) {
-            btnEl.disabled = false;
-            btnEl.textContent = 'Entrar';
-            if (data.success) {
-              self.setSession(data.user);
-              self._closeModal();
-              self._showLojaStep(data.user);
-            } else {
-              errorEl.textContent = 'E-mail ou senha inválidos.';
-              errorEl.style.display = 'block';
-            }
-          })
-          .catch(function () {
-            btnEl.disabled = false;
-            btnEl.textContent = 'Entrar';
-            errorEl.textContent = 'Erro ao conectar ao servidor. Tente novamente.';
+        var loginTimeout = setTimeout(function() {
+          errorEl.textContent = 'Erro ao conectar ao servidor. Tente novamente.';
+          errorEl.style.display = 'block';
+          btnEl.disabled = false;
+          btnEl.textContent = 'Entrar';
+        }, 15000);
+
+        _postViaForm(gasUrl, { action: 'validar_login', email: email, senha: senha }, function(data) {
+          clearTimeout(loginTimeout);
+          btnEl.disabled = false;
+          btnEl.textContent = 'Entrar';
+          if (data && data.success) {
+            self.setSession(data.user);
+            self._closeModal();
+            self._showLojaStep(data.user);
+          } else {
+            errorEl.textContent = 'E-mail ou senha inválidos.';
             errorEl.style.display = 'block';
-          });
+          }
+        });
       }
 
       btnEl.addEventListener('click', submitLogin);
