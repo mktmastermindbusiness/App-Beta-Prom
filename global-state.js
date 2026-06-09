@@ -143,7 +143,7 @@
     postViaForm: function (url, data, callback) { _postViaForm(url, data, callback); },
 
     getSelection: function () {
-      try { return JSON.parse(localStorage.getItem(STORAGE_SELECTION)); } catch (e) { return null; }
+      try { var v = JSON.parse(localStorage.getItem(STORAGE_SELECTION)); if (v && v.rede && v.loja) return v; return null; } catch (e) { return null; }
     },
     setSelection: function (rede, loja, promotor, estado) {
       var sel = { rede: rede, loja: loja, promotor: promotor, estado: estado, updatedAt: Date.now() };
