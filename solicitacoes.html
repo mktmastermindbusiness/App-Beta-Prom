@@ -86,12 +86,11 @@
         <h1 id="welcome-message">Solicitações</h1>
 
         <p style="display: none;">Solicitação de Material</p>
+        <div id="userInfo" class="user-badge">
+            <span id="userInfoText" class="badge-text"></span>
+            <button onclick="sair()" class="badge-sair">Sair</button>
+        </div>
     </header>
-
-    <div id="userInfo" class="user-badge">
-        <span id="userInfoText" class="badge-text"></span>
-        <button onclick="sair()" class="badge-sair">Sair</button>
-    </div>
 
     <nav class="desktop-nav">
         <a href="index.html">Início</a>
@@ -136,21 +135,21 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var sel = window.QD.getSelecao();
-            if (sel && sel.rede && sel.loja) {
-                var params = '?rede=' + encodeURIComponent(sel.rede) + '&loja=' + encodeURIComponent(sel.loja) + '&promotor=' + encodeURIComponent(sel.promotor || '');
-                var iframe = document.getElementById('iframe-solicitacoes');
-                if (iframe && iframe.src.indexOf(params) === -1) {
-                    iframe.src += params;
-                }
+            if (!sel || !sel.rede || !sel.loja) { window.location.replace('entrar.html'); return; }
+            var params = '?rede=' + encodeURIComponent(sel.rede) + '&loja=' + encodeURIComponent(sel.loja) + '&promotor=' + encodeURIComponent(sel.promotor || '');
+            var iframe = document.getElementById('iframe-solicitacoes');
+            if (iframe && iframe.src.indexOf(params) === -1) {
+                iframe.src += params;
             }
         });
     </script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var sel = window.QD.getSelecao();
+            if (!sel || !sel.rede || !sel.loja) { return; }
             var userInfo = document.getElementById('userInfo');
             var userInfoText = document.getElementById('userInfoText');
-            if (userInfo && sel && sel.rede && sel.loja) {
+            if (userInfo) {
                 userInfoText.textContent = sel.rede + ' \u203A ' + sel.loja;
                 if (sel.promotor) {
                     userInfoText.textContent = sel.promotor + ' | ' + sel.rede + ' \u203A ' + sel.loja;

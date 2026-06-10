@@ -45,17 +45,18 @@
         '#bananeiro-bubble {',
         '  position: absolute; top: 50%; right: 6px;',
         '  transform: translateY(-50%); z-index: 210;',
-        '  width: 32px; height: 32px; padding: 0;',
-        '  border-radius: 50%; background: rgba(255,255,255,0.14);',
+        '  width: auto; min-width: 32px; padding: 0 10px;',
+        '  border-radius: 14px; background: rgba(255,255,255,0.14);',
         '  color: #fff; border: 1px solid rgba(255,255,255,0.22);',
-        '  cursor: pointer; font-size: 14px; display: flex;',
-        '  align-items: center; justify-content: center;',
+        '  cursor: pointer; font-size: 11px; font-weight: 600;',
+        '  display: flex; align-items: center; justify-content: center;',
+        '  height: 28px;',
         '  transition: background 0.2s;',
         '  -webkit-tap-highlight-color: transparent;',
         '  line-height: 1;',
         '}',
         '#bananeiro-bubble:hover { background: rgba(255,255,255,0.28); }',
-        '#bananeiro-bubble:active { transform: translateY(-50%) scale(0.93); }',
+        '#bananeiro-bubble:active { transform: translateY(-50%) scale(0.95); }',
         '#bananeiro-overlay {',
         '  position: fixed; inset: 0; z-index: 10000;',
         '  background: rgba(0,0,0,0.5);',
@@ -221,7 +222,7 @@
         els.bubble.id = 'bananeiro-bubble';
         els.bubble.setAttribute('aria-label', 'Abrir Assistente');
         els.bubble.title = 'Assistente';
-        els.bubble.textContent = '\uD83D\uDCAC';
+        els.bubble.textContent = 'Assistente';
         var header = document.getElementById('cabecalho-principal');
         if (header) {
             header.appendChild(els.bubble);

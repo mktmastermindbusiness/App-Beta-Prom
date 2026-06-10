@@ -28,33 +28,7 @@
     };
 
     // ... restante do código (atualizarRelogio, etc)
-    // 1. Header Compact on Scroll (2 níveis)
-    const header = document.getElementById('cabecalho-principal');
-    if (header) {
-        let lastScroll = 0;
-        window.addEventListener('scroll', () => {
-            const currentScroll = window.scrollY;
-            
-            // Nível 1: compact (36px)
-            if (currentScroll > 50) {
-                header.classList.add('compact');
-            } else {
-                header.classList.remove('compact');
-                header.classList.remove('compact-max');
-            }
-            
-            // Nível 2: ultra-compact (30px)
-            if (currentScroll > 200) {
-                header.classList.add('compact-max');
-            } else {
-                header.classList.remove('compact-max');
-            }
-            
-            lastScroll = currentScroll;
-        });
-    }
-
-    // 2. Lógica do Botão Voltar ao Topo
+    // 1. Lógica do Botão Voltar ao Topo
     const backToTop = document.querySelector('.back-to-top');
 
     if (backToTop) {
