@@ -20,16 +20,18 @@
     <header id="cabecalho-principal">
         <a href="materiais.html" class="header-materiais-btn active" aria-label="Materiais">
             <i class="fas fa-book"></i>
+            <span>Materiais</span>
         </a>
         <div class="logo-placeholder">
             <img src="./images/logo-qdelicia.png" alt="Qdelícia Frutas">
         </div>
         <h1>Materiais</h1>
-        <div id="userInfo" style="display:none;font-size:0.75rem;color:#6366f1;font-weight:600;margin-left:auto;margin-right:10px;align-items:center;gap:8px;overflow:hidden;">
-            <span id="userInfoText" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:35vw;"></span>
-            <button onclick="sair()" style="background:none;border:1px solid #6366f1;color:#6366f1;border-radius:6px;padding:3px 10px;font-size:0.7rem;font-weight:600;cursor:pointer;font-family:inherit;flex-shrink:0;">Sair</button>
-        </div>
     </header>
+
+    <div id="userInfo" class="user-badge">
+        <span id="userInfoText" class="badge-text"></span>
+        <button onclick="sair()" class="badge-sair">Sair</button>
+    </div>
 
     <nav class="desktop-nav">
         <a href="index.html">Início</a>
@@ -150,23 +152,23 @@
                 <div class="mission-card">
                     <i class="fas fa-chalkboard-teacher"></i>
                     <p>Guia de Boas Práticas</p>
-                    <button class="btn-view-material" data-title="Guia de Boas Práticas">Acessar</button>
+                    <a href="https://drive.google.com/PLACEHOLDER_1" target="_blank" class="btn-view-material" style="text-decoration:none;display:inline-flex;align-items:center;gap:5px;"><i class="fas fa-external-link-alt"></i> Acessar</a>
                 </div>
                 <div class="mission-card">
                     <i class="fas fa-apple-whole"></i>
                     <p>Qualidade das Frutas</p>
-                    <button class="btn-view-material" data-title="Qualidade das Frutas">Acessar</button>
+                    <a href="https://drive.google.com/PLACEHOLDER_2" target="_blank" class="btn-view-material" style="text-decoration:none;display:inline-flex;align-items:center;gap:5px;"><i class="fas fa-external-link-alt"></i> Acessar</a>
                 </div>
                 <div class="mission-card">
                     <i class="fas fa-users"></i>
                     <p>Atendimento ao Cliente</p>
-                    <button class="btn-view-material" data-title="Atendimento ao Cliente">Acessar</button>
+                    <a href="https://drive.google.com/PLACEHOLDER_3" target="_blank" class="btn-view-material" style="text-decoration:none;display:inline-flex;align-items:center;gap:5px;"><i class="fas fa-external-link-alt"></i> Acessar</a>
                 </div>
             </div>
         </section>
 
         <section class="manuais glass-section">
-            <h2><i class="fas fa-file-pdf"></i> Manuais do Promotor</h2>
+            <h2><i class="fab fa-youtube"></i> Manuais do App</h2>
             <div class="routine-list">
                 <div class="routine-item">
                     <div style="display: flex; align-items: center; gap: 15px;">
@@ -175,7 +177,7 @@
                             <p>Manual de Abastecimento e Exposição</p>
                         </div>
                     </div>
-                    <button class="btn-view-material" data-title="Manual de Abastecimento">Ver PDF</button>
+                    <a href="https://youtu.be/PLACEHOLDER_1" target="_blank" class="btn-view-material" style="text-decoration:none;display:inline-flex;align-items:center;gap:5px;"><i class="fab fa-youtube"></i> Assistir</a>
                 </div>
                 <div class="routine-item" style="margin-top: 15px;">
                     <div style="display: flex; align-items: center; gap: 15px;">
@@ -184,7 +186,7 @@
                             <p>Procedimento de Registro de Estoque</p>
                         </div>
                     </div>
-                    <button class="btn-view-material" data-title="Procedimento de Registro">Ver PDF</button>
+                    <a href="https://youtu.be/PLACEHOLDER_2" target="_blank" class="btn-view-material" style="text-decoration:none;display:inline-flex;align-items:center;gap:5px;"><i class="fab fa-youtube"></i> Assistir</a>
                 </div>
                 <div class="routine-item" style="margin-top: 15px;">
                     <div style="display: flex; align-items: center; gap: 15px;">
@@ -193,7 +195,7 @@
                             <p>Uso Correto do App de Fotos</p>
                         </div>
                     </div>
-                    <button class="btn-view-material" data-title="Uso do App de Fotos">Ver PDF</button>
+                    <a href="https://youtu.be/PLACEHOLDER_3" target="_blank" class="btn-view-material" style="text-decoration:none;display:inline-flex;align-items:center;gap:5px;"><i class="fab fa-youtube"></i> Assistir</a>
                 </div>
             </div>
         </section>
@@ -236,7 +238,7 @@
     <script src="notifications.js"></script>
     <script src="script.js"></script>
     <script>
-        document.querySelectorAll('.btn-view-material').forEach(btn => {
+        document.querySelectorAll('.btn-view-material:not(a)').forEach(btn => {
             btn.onclick = () => {
                 const title = btn.getAttribute('data-title');
                 document.getElementById('material-modal-title').innerText = title;

@@ -192,18 +192,20 @@ header.compact-max h1 {
 
 /* ---- Botão Materiais esquerda (mobile) ---- */
 .header-materiais-btn {
-    width: 38px;
-    height: 38px;
+    width: 44px;
+    height: 44px;
     grid-column: 1;
     grid-row: 1 / 3;
     align-self: center;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    gap: 1px;
     background: rgba(255, 255, 255, 0.14);
     border: 1.5px solid rgba(255, 255, 255, 0.22);
     color: var(--white);
-    font-size: 1rem;
+    font-size: 0.82rem;
     border-radius: 10px;
     cursor: pointer;
     text-decoration: none;
@@ -218,6 +220,15 @@ header.compact-max h1 {
 
 .header-materiais-btn i {
     pointer-events: none;
+}
+
+.header-materiais-btn span {
+    font-size: 0.45rem;
+    font-weight: 600;
+    line-height: 1;
+    opacity: 0.85;
+    pointer-events: none;
+    white-space: nowrap;
 }
 
 /* ---- Título no header ---- */
@@ -240,6 +251,55 @@ header h1 {
 
 header p {
     display: none;
+}
+
+/* ---- Etiqueta de usuário fixa abaixo do header ---- */
+.user-badge {
+    position: fixed;
+    top: calc(var(--header-h-mobile) + 4px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 199;
+    display: none;
+    align-items: center;
+    gap: 6px;
+    background: var(--white);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    border-radius: 20px;
+    padding: 4px 14px 4px 16px;
+    box-shadow: 0 3px 14px rgba(0, 0, 0, 0.1);
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    white-space: nowrap;
+    max-width: 85vw;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.user-badge .badge-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.user-badge .badge-sair {
+    background: none;
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+    border-radius: 12px;
+    padding: 1px 8px;
+    font-size: 0.62rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    flex-shrink: 0;
+    line-height: 1.6;
+    transition: background 0.2s, color 0.2s;
+}
+
+.user-badge .badge-sair:hover {
+    background: var(--primary-color);
+    color: var(--white);
 }
 
 /* ===================== BOTTOM TAB BAR — MOBILE ===================== */

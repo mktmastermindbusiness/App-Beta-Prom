@@ -362,6 +362,7 @@
     <header id="cabecalho-principal">
         <a href="materiais.html" class="header-materiais-btn" aria-label="Materiais">
             <i class="fas fa-book"></i>
+            <span>Materiais</span>
         </a>
         <div class="logo-placeholder">
             <img src="./images/logo-qdelicia.png" alt="Qdelícia Frutas">
@@ -369,6 +370,11 @@
         <h1>Pedido</h1>
 
     </header>
+
+    <div id="userInfo" class="user-badge">
+        <span id="userInfoText" class="badge-text"></span>
+        <button onclick="sair()" class="badge-sair">Sair</button>
+    </div>
 
     <nav class="desktop-nav">
         <a href="index.html">Início</a>
@@ -540,6 +546,21 @@
     <script src="notifications.js"></script>
     <script src="script.js"></script>
     <script src="pedido.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var sel = window.QD.getSelecao();
+            var userInfo = document.getElementById('userInfo');
+            var userInfoText = document.getElementById('userInfoText');
+            if (userInfo && sel && sel.rede && sel.loja) {
+                userInfoText.textContent = sel.rede + ' \u203A ' + sel.loja;
+                if (sel.promotor) {
+                    userInfoText.textContent = sel.promotor + ' | ' + sel.rede + ' \u203A ' + sel.loja;
+                }
+                userInfo.style.display = 'flex';
+            }
+        });
+        function sair() { window.QD.limparSelecao(); window.location.replace('entrar.html'); }
+    </script>
 </body>
 
 </html>

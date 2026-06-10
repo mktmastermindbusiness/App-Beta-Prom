@@ -76,6 +76,7 @@
     <header id="cabecalho-principal">
         <a href="materiais.html" class="header-materiais-btn" aria-label="Materiais">
             <i class="fas fa-book"></i>
+            <span>Materiais</span>
         </a>
         <div class="logo-placeholder">
             <img src="./images/logo-qdelicia.png" alt="Qdelícia Frutas">
@@ -83,11 +84,12 @@
         <h1 id="welcome-message">Feriados</h1>
 
         <p style="display: none;">Feriados Trabalhados</p>
-        <div id="userInfo" style="display:none;font-size:0.75rem;color:#6366f1;font-weight:600;margin-left:auto;margin-right:10px;align-items:center;gap:8px;overflow:hidden;">
-            <span id="userInfoText" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:35vw;"></span>
-            <button onclick="sair()" style="background:none;border:1px solid #6366f1;color:#6366f1;border-radius:6px;padding:3px 10px;font-size:0.7rem;font-weight:600;cursor:pointer;font-family:inherit;flex-shrink:0;">Sair</button>
-        </div>
     </header>
+
+    <div id="userInfo" class="user-badge">
+        <span id="userInfoText" class="badge-text"></span>
+        <button onclick="sair()" class="badge-sair">Sair</button>
+    </div>
 
     <nav class="desktop-nav">
         <a href="index.html">Início</a>
@@ -140,6 +142,11 @@
             var iframe = document.getElementById('iframe-feriados');
             if (iframe) {
                 iframe.src = GAS_FERIADOS + '?page=Colaborador' + params;
+                iframe.onload = function() {
+                    try {
+                        iframe.contentWindow.postMessage({ type: 'app-selecao', rede: sel.rede, loja: sel.loja, promotor: sel.promotor || '' }, '*');
+                    } catch(e) {}
+                };
             }
         });
 
