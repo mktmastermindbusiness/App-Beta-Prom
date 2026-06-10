@@ -43,17 +43,19 @@
 
     var STYLES = [
         '#bananeiro-bubble {',
-        '  position: fixed; bottom: 80px; right: 16px; z-index: 9999;',
-        '  width: 56px; height: 56px; border-radius: 50%;',
+        '  position: fixed; top: 64px; right: 16px; z-index: 9999;',
+        '  padding: 8px 16px; border-radius: 20px;',
         '  background: #2e7d32; color: #fff; border: none;',
         '  box-shadow: 0 4px 16px rgba(46,125,50,0.4);',
-        '  cursor: pointer; font-size: 24px; display: flex;',
+        '  cursor: pointer; font-size: 13px; font-weight: 600;',
+        '  font-family: "Inter",sans-serif; display: flex;',
         '  align-items: center; justify-content: center;',
-        '  transition: transform 0.2s, box-shadow 0.2s;',
+        '  transition: background 0.2s, box-shadow 0.2s;',
         '  -webkit-tap-highlight-color: transparent;',
+        '  white-space: nowrap;',
         '}',
-        '#bananeiro-bubble:hover { transform: scale(1.1); }',
-        '#bananeiro-bubble:active { transform: scale(0.95); }',
+        '#bananeiro-bubble:hover { background: #1b5e20; }',
+        '#bananeiro-bubble:active { transform: scale(0.97); }',
         '@keyframes bananeiro-pulse {',
         '  0% { box-shadow: 0 4px 16px rgba(46,125,50,0.4); }',
         '  50% { box-shadow: 0 4px 24px rgba(46,125,50,0.7); }',
@@ -223,8 +225,8 @@
     function createElements() {
         els.bubble = document.createElement('button');
         els.bubble.id = 'bananeiro-bubble';
-        els.bubble.setAttribute('aria-label', 'Abrir Bananeiro');
-        els.bubble.textContent = '\uD83C\uDF4C';
+        els.bubble.setAttribute('aria-label', 'Abrir Assistente');
+        els.bubble.textContent = 'Assistente';
         document.body.appendChild(els.bubble);
 
         els.overlay = document.createElement('div');

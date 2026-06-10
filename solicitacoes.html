@@ -85,7 +85,10 @@
         <h1 id="welcome-message">Solicitações</h1>
 
         <p style="display: none;">Solicitação de Material</p>
-        <button onclick="recarregarPagina()" class="btn-refresh"><i class="fas fa-sync-alt"></i> Atualizar</button>
+        <div id="userInfo" style="display:none;font-size:0.75rem;color:#6366f1;font-weight:600;margin-left:auto;margin-right:10px;align-items:center;gap:8px;overflow:hidden;">
+            <span id="userInfoText" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:35vw;"></span>
+            <button onclick="sair()" style="background:none;border:1px solid #6366f1;color:#6366f1;border-radius:6px;padding:3px 10px;font-size:0.7rem;font-weight:600;cursor:pointer;font-family:inherit;flex-shrink:0;">Sair</button>
+        </div>
     </header>
 
     <nav class="desktop-nav">
@@ -139,6 +142,21 @@
                 }
             }
         });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var sel = window.QD.getSelecao();
+            var userInfo = document.getElementById('userInfo');
+            var userInfoText = document.getElementById('userInfoText');
+            if (userInfo && sel && sel.rede && sel.loja) {
+                userInfoText.textContent = sel.rede + ' \u203A ' + sel.loja;
+                if (sel.promotor) {
+                    userInfoText.textContent = sel.promotor + ' | ' + sel.rede + ' \u203A ' + sel.loja;
+                }
+                userInfo.style.display = 'flex';
+            }
+        });
+        function sair() { window.QD.limparSelecao(); window.location.replace('entrar.html'); }
     </script>
 </body>
 
