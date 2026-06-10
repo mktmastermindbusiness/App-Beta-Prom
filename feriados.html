@@ -136,7 +136,7 @@
             var sel = window.QD.getSelecao();
             var params = '';
             if (sel && sel.rede && sel.loja) {
-                params = '&rede=' + encodeURIComponent(sel.rede) + '&loja=' + encodeURIComponent(sel.loja);
+                params = '&rede=' + encodeURIComponent(sel.rede) + '&loja=' + encodeURIComponent(sel.loja) + '&promotor=' + encodeURIComponent(sel.promotor || '');
             }
 
             var iframe = document.getElementById('iframe-feriados');

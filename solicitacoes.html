@@ -137,7 +137,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             var sel = window.QD.getSelecao();
             if (sel && sel.rede && sel.loja) {
-                var params = '?rede=' + encodeURIComponent(sel.rede) + '&loja=' + encodeURIComponent(sel.loja);
+                var params = '?rede=' + encodeURIComponent(sel.rede) + '&loja=' + encodeURIComponent(sel.loja) + '&promotor=' + encodeURIComponent(sel.promotor || '');
                 var iframe = document.getElementById('iframe-solicitacoes');
                 if (iframe && iframe.src.indexOf(params) === -1) {
                     iframe.src += params;
