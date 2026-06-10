@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description" content="Área do Promotor - Registros e Informações">
+
+    <meta name="author" content="Qdelícia Frutas">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lexend:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="bananeiro.js" defer></script>
+</head>
+
+<body class="index-page">
+
+    <header id="cabecalho-principal">
+        <a href="materiais.html" class="header-materiais-btn" aria-label="Materiais">
+            <i class="fas fa-book"></i>
+        </a>
+        <div class="logo-placeholder">
+            <img src="./images/logo-qdelicia.png" alt="Qdelícia Frutas">
+        </div>
+        <h1>Início</h1>
+        <div id="userInfo" style="display:none;font-size:0.75rem;color:#6366f1;font-weight:600;white-space:nowrap;margin-left:auto;margin-right:10px;align-items:center;gap:8px;">
+            <span id="userInfoText"></span>
+            <button onclick="sair()" style="background:none;border:1px solid #6366f1;color:#6366f1;border-radius:6px;padding:3px 10px;font-size:0.7rem;font-weight:600;cursor:pointer;font-family:inherit;">Sair</button>
+        </div>
+
+    </header>
+
+
+
+    <nav class="desktop-nav">
+        <a href="index.html" class="active">Início</a>
+        <a href="estoque.html">Estoque</a>
+        <a href="camera.html">Câmera</a>
+        <a href="materiais.html">Materiais</a>
+        <a href="pedido.html">Sugestão</a>
+        <a href="feriados.html">Feriados</a>
+        <a href="solicitacoes.html">Solicitações</a>
+    </nav>
+
+
+
+    <main>
+
+
+
+
+
+        <section class="missao glass-section">
+            <h2>Bem vindo à Área do Promotor</h2>
+            <h2><i class="fas fa-bullseye"></i> Nossa Missão</h2>
+            <div class="mission-grid">
+                <div class="mission-card">
+                    <i class="fas fa-heart"></i>
+                    <p>Foco no atendimento ao cliente</p>
+                </div>
+                <div class="mission-card">
+                    <i class="fas fa-comments"></i>
+                    <p>Ouvir e entender o cliente</p>
+                </div>
+                <div class="mission-card">
+                    <i class="fas fa-star"></i>
+                    <p>Tornar a Experiência do Cliente Única </p>
+                </div>
+                <div class="mission-card">
+                    <i class="fas fa-chart-line"></i>
+                    <p>Melhoria pessoal contínua diária</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="rotina glass-section">
+            <h2><i class="fas fa-calendar-check"></i> Nossa rotina diária</h2>
+            <div class="routine-list">
+                <div class="routine-item">
+                    <div class="routine-number">1</div>
+                    <div class="routine-content">
+                        <p>Ao chegar na loja, Checar Estoque e Bancadas. Repassar informação imediata se estiver zerado.
+                        </p>
+                    </div>
+                </div>
+                <div class="routine-item">
+                    <div class="routine-number">2</div>
+                    <div class="routine-content">
+                        <p>Realizar o Abastecimento.</p>
+                    </div>
+                </div>
+                <div class="routine-item">
+                    <div class="routine-number">3</div>
+                    <div class="routine-content">
+                        <p>Registrar e Compartilhar Fotos do Abastecimento no Grupo via App.</p>
+                    </div>
+                </div>
+                <div class="routine-item">
+                    <div class="routine-number">4</div>
+                    <div class="routine-content">
+                        <p>Fotos em 3 momentos: 1º Abastecimento, Antes do almoço e Antes de Finalizar Jornada.</p>
+                    </div>
+                </div>
+                <div class="routine-item">
+                    <div class="routine-number">5</div>
+                    <div class="routine-content">
+                        <p>Realizar o Registro do Estoque Diário Pelo App(lembrar de inserir os pontos extras, se
+                            houver).</p>
+                    </div>
+                </div>
+                <div class="routine-item">
+                    <div class="routine-number">6</div>
+                    <div class="routine-content">
+                        <p>Organizar as Caixas 'G' em Blocos de 3 para agilizar a coleta.</p>
+                    </div>
+                </div>
+                <div class="routine-item">
+                    <div class="routine-number">7</div>
+                    <div class="routine-content">
+                        <p>Registrar e Compartilhar Foto das Caixas Secas no Grupo.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="materiais-acesso glass-section" style="text-align:center; padding: 24px 18px;">
+            <h2 style="margin-bottom:10px;"><i class="fas fa-book-open"></i> Materiais de Apoio</h2>
+            <p style="color:var(--text-medium); margin-bottom:20px; font-size:0.95rem; line-height:1.5;">
+                Acesse guias, procedimentos e materiais de treinamento disponibilizados para o promotor.
+            </p>
+            <a href="materiais.html" style="
+                display: inline-flex;
+                align-items: center;
+                gap: 9px;
+                background: linear-gradient(135deg, #6366f1, #4f46e5);
+                color: #ffffff;
+                text-decoration: none;
+                padding: 14px 28px;
+                border-radius: 50px;
+                font-size: 1rem;
+                font-weight: 700;
+                font-family: inherit;
+                box-shadow: 0 4px 16px rgba(99,102,241,0.4);
+                transition: transform 0.2s, box-shadow 0.2s;
+            "
+            onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(99,102,241,0.5)'"
+            onmouseout="this.style.transform='';this.style.boxShadow='0 4px 16px rgba(99,102,241,0.4)'">
+                <i class="fas fa-book"></i> Acessar Materiais
+            </a>
+        </section>
+
+    </main>
+
+
+
+    <nav class="bottom-tabs">
+        <a href="index.html" class="tab-item active"><i class="fas fa-home"></i><span>Início</span></a>
+        <a href="estoque.html" class="tab-item"><i class="fas fa-boxes-stacked"></i><span>Estoque</span></a>
+        <a href="camera.html" class="tab-item tab-camera"><span class="cam-wrap"><i class="fas fa-camera"></i></span><span>Câmera</span></a>
+        <a href="pedido.html" class="tab-item"><i class="fas fa-file-invoice"></i><span>Sugestão</span></a>
+        <a href="feriados.html" class="tab-item"><i class="fas fa-calendar-alt"></i><span>Feriados</span></a>
+    </nav>
+
+    <footer>
+
+        <p>&copy; 2025 Qdelícia Frutas. Todos os direitos reservados.</p>
+
+    </footer>
+
+
+
+
+
+
+    <div class="back-to-top">
+
+        <i class="fas fa-arrow-up"></i>
+
+    </div>
+
+
+    <script>
+
+        // Função global (usada pelo alert.js) para atualizar a UI com base na permissão
+        window.updateAlertUI = function (permission) {
+            var toggle = document.getElementById('alert-toggle-switch');
+            var testBtn = document.getElementById('test-audio-btn');
+            var statusElement = document.getElementById('alert-status');
+            if (!toggle || !statusElement) return;
+            permission = permission || Notification.permission;
+            if (permission === 'granted') {
+                var enabled = localStorage.getItem('alertsEnabled') === 'true';
+                toggle.checked = enabled;
+                toggle.disabled = false;
+                if (testBtn) testBtn.style.display = 'inline-block';
+                statusElement.innerHTML = enabled ? 'Alertas ativos!' : 'Alertas pausados.';
+                var onLabel = document.getElementById('toggle-label-on');
+                var offLabel = document.getElementById('toggle-label-off');
+                if (onLabel) onLabel.style.display = enabled ? 'inline' : 'none';
+                if (offLabel) offLabel.style.display = enabled ? 'none' : 'inline';
+            } else if (permission === 'denied') {
+                statusElement.innerHTML = 'Alertas bloqueados.';
+                toggle.checked = false;
+                toggle.disabled = true;
+                if (testBtn) testBtn.style.display = 'none';
+            } else {
+                statusElement.innerHTML = 'Ligue o interruptor para ativar os alertas.';
+                toggle.checked = false;
+                toggle.disabled = false;
+                if (testBtn) testBtn.style.display = 'none';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var toggle = document.getElementById('alert-toggle-switch');
+            var testBtn = document.getElementById('test-audio-btn');
+            if (toggle) {
+                toggle.addEventListener('change', function() {
+                    if (toggle.checked && typeof window.enableAlerts === 'function') window.enableAlerts();
+                    else if (!toggle.checked && typeof window.disableAlerts === 'function') window.disableAlerts();
+                });
+            }
+            if (testBtn) {
+                testBtn.addEventListener('click', function() {
+                    if (typeof window.unlockAndTestAudio === 'function') window.unlockAndTestAudio();
+                });
+            }
+            window.updateAlertUI(Notification.permission);
+        });
+    </script>
+
+    <script src="shared-rede-loja.js"></script>
+    <script src="notifications.js"></script>
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var sel = window.QD.getSelecao();
+            if (!sel || !sel.rede || !sel.loja) {
+                window.location.replace('entrar.html');
+                return;
+            }
+            var userInfo = document.getElementById('userInfo');
+            var userInfoText = document.getElementById('userInfoText');
+            if (userInfo && sel.rede && sel.loja) {
+                userInfoText.textContent = sel.rede + ' › ' + sel.loja;
+                if (sel.promotor) {
+                    userInfoText.textContent = sel.promotor + ' | ' + sel.rede + ' › ' + sel.loja;
+                }
+                userInfo.style.display = 'flex';
+            }
+        });
+
+        function sair() {
+            window.QD.limparSelecao();
+            window.location.replace('entrar.html');
+        }
+    </script>
+
+</body>
+
+</html>

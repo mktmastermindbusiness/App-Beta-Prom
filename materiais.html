@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Materiais e Manuais - Qdelícia Frutas">
+    <title>Materiais - Qdelícia Frutas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lexend:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="bananeiro.js" defer></script>
+</head>
+
+<body>
+    <header id="cabecalho-principal">
+        <a href="materiais.html" class="header-materiais-btn active" aria-label="Materiais">
+            <i class="fas fa-book"></i>
+        </a>
+        <div class="logo-placeholder">
+            <img src="./images/logo-qdelicia.png" alt="Qdelícia Frutas">
+        </div>
+        <h1>Materiais</h1>
+
+    </header>
+
+    <nav class="desktop-nav">
+        <a href="index.html">Início</a>
+        <a href="estoque.html">Estoque</a>
+        <a href="camera.html">Câmera</a>
+        <a href="materiais.html" class="active">Materiais</a>
+        <a href="pedido.html">Sugestão</a>
+        <a href="feriados.html">Feriados</a>
+        <a href="solicitacoes.html">Solicitações</a>
+    </nav>
+
+    <style>
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: var(--white);
+            padding: 25px;
+            border-radius: var(--border-radius-lg);
+            width: 90%;
+            max-width: 400px;
+            box-shadow: var(--shadow-lg);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .modal-header h3 {
+            color: var(--primary-color);
+            margin: 0;
+        }
+
+        .modal-footer {
+            margin-top: 25px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-modal {
+            flex: 1;
+            padding: 12px;
+            border-radius: var(--border-radius);
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            transition: var(--transition);
+        }
+
+        .btn-confirm {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-view-material {
+            background: var(--bg-light);
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: var(--transition);
+        }
+
+        .btn-view-material:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .mission-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .routine-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+    </style>
+
+    <main>
+        <section class="materiais-educativos glass-section">
+            <h2><i class="fas fa-graduation-cap"></i> Materiais Educativos</h2>
+            <div class="mission-grid">
+                <div class="mission-card">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                    <p>Guia de Boas Práticas</p>
+                    <button class="btn-view-material" data-title="Guia de Boas Práticas">Acessar</button>
+                </div>
+                <div class="mission-card">
+                    <i class="fas fa-apple-whole"></i>
+                    <p>Qualidade das Frutas</p>
+                    <button class="btn-view-material" data-title="Qualidade das Frutas">Acessar</button>
+                </div>
+                <div class="mission-card">
+                    <i class="fas fa-users"></i>
+                    <p>Atendimento ao Cliente</p>
+                    <button class="btn-view-material" data-title="Atendimento ao Cliente">Acessar</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="manuais glass-section">
+            <h2><i class="fas fa-file-pdf"></i> Manuais do Promotor</h2>
+            <div class="routine-list">
+                <div class="routine-item">
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <div class="routine-number">1</div>
+                        <div class="routine-content">
+                            <p>Manual de Abastecimento e Exposição</p>
+                        </div>
+                    </div>
+                    <button class="btn-view-material" data-title="Manual de Abastecimento">Ver PDF</button>
+                </div>
+                <div class="routine-item" style="margin-top: 15px;">
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <div class="routine-number">2</div>
+                        <div class="routine-content">
+                            <p>Procedimento de Registro de Estoque</p>
+                        </div>
+                    </div>
+                    <button class="btn-view-material" data-title="Procedimento de Registro">Ver PDF</button>
+                </div>
+                <div class="routine-item" style="margin-top: 15px;">
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <div class="routine-number">3</div>
+                        <div class="routine-content">
+                            <p>Uso Correto do App de Fotos</p>
+                        </div>
+                    </div>
+                    <button class="btn-view-material" data-title="Uso do App de Fotos">Ver PDF</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <nav class="bottom-tabs">
+        <a href="index.html" class="tab-item"><i class="fas fa-home"></i><span>Início</span></a>
+        <a href="estoque.html" class="tab-item"><i class="fas fa-boxes-stacked"></i><span>Estoque</span></a>
+        <a href="camera.html" class="tab-item tab-camera"><span class="cam-wrap"><i class="fas fa-camera"></i></span><span>Câmera</span></a>
+        <a href="pedido.html" class="tab-item"><i class="fas fa-file-invoice"></i><span>Sugestão</span></a>
+        <a href="feriados.html" class="tab-item"><i class="fas fa-calendar-alt"></i><span>Feriados</span></a>
+    </nav>
+
+    <a href="https://wa.me/5581997250086" class="whatsapp-btn" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <div class="back-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+
+    <div id="material-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="material-modal-title">Visualizar Material</h3>
+            </div>
+            <div class="modal-body" id="material-modal-body"
+                style="text-align: center; color: var(--text-muted); padding: 20px;">
+                <i class="fas fa-info-circle"
+                    style="font-size: 3rem; color: var(--secondary-color); margin-bottom: 15px;"></i>
+                <p>Este material estará disponível em breve para visualização ou download.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-modal btn-confirm"
+                    onclick="document.getElementById('material-modal').classList.remove('active')">Entendido</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="notifications.js"></script>
+    <script src="script.js"></script>
+    <script>
+        document.querySelectorAll('.btn-view-material').forEach(btn => {
+            btn.onclick = () => {
+                const title = btn.getAttribute('data-title');
+                document.getElementById('material-modal-title').innerText = title;
+                document.getElementById('material-modal').classList.add('active');
+            };
+        });
+    </script>
+</body>
+
+</html>
