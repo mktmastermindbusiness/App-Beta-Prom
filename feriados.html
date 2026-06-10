@@ -167,6 +167,7 @@
             }
         });
         function sair() { window.QD.limparSelecao(); window.location.replace('entrar.html'); }
+        window.addEventListener('message',function(e){if(e.data&&e.data.type==='app-request-selecao'&&e.source){var s=window.QD.getSelecao();if(s&&s.rede&&s.loja)e.source.postMessage({type:'app-selecao',rede:s.rede,loja:s.loja,promotor:s.promotor||''},'*')}});
     </script>
 </body>
 </html>

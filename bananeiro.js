@@ -43,25 +43,19 @@
 
     var STYLES = [
         '#bananeiro-bubble {',
-        '  position: fixed; bottom: 72px; right: 16px; z-index: 9999;',
-        '  padding: 8px 16px; border-radius: 20px;',
-        '  background: #6366f1; color: #fff; border: none;',
-        '  box-shadow: 0 4px 16px rgba(99,102,241,0.4);',
-        '  cursor: pointer; font-size: 13px; font-weight: 600;',
-        '  font-family: "Inter",sans-serif; display: flex;',
+        '  position: absolute; top: 50%; right: 6px;',
+        '  transform: translateY(-50%); z-index: 210;',
+        '  width: 32px; height: 32px; padding: 0;',
+        '  border-radius: 50%; background: rgba(255,255,255,0.14);',
+        '  color: #fff; border: 1px solid rgba(255,255,255,0.22);',
+        '  cursor: pointer; font-size: 14px; display: flex;',
         '  align-items: center; justify-content: center;',
-        '  transition: background 0.2s, box-shadow 0.2s;',
+        '  transition: background 0.2s;',
         '  -webkit-tap-highlight-color: transparent;',
-        '  white-space: nowrap;',
+        '  line-height: 1;',
         '}',
-        '#bananeiro-bubble:hover { background: #4f46e5; }',
-        '#bananeiro-bubble:active { transform: scale(0.97); }',
-        '@keyframes bananeiro-pulse {',
-        '  0% { box-shadow: 0 4px 16px rgba(99,102,241,0.4); }',
-        '  50% { box-shadow: 0 4px 24px rgba(99,102,241,0.7); }',
-        '  100% { box-shadow: 0 4px 16px rgba(99,102,241,0.4); }',
-        '}',
-        '#bananeiro-bubble { animation: bananeiro-pulse 2s infinite; }',
+        '#bananeiro-bubble:hover { background: rgba(255,255,255,0.28); }',
+        '#bananeiro-bubble:active { transform: translateY(-50%) scale(0.93); }',
         '#bananeiro-overlay {',
         '  position: fixed; inset: 0; z-index: 10000;',
         '  background: rgba(0,0,0,0.5);',
@@ -226,8 +220,15 @@
         els.bubble = document.createElement('button');
         els.bubble.id = 'bananeiro-bubble';
         els.bubble.setAttribute('aria-label', 'Abrir Assistente');
-        els.bubble.textContent = 'Assistente';
-        document.body.appendChild(els.bubble);
+        els.bubble.title = 'Assistente';
+        els.bubble.textContent = '\uD83D\uDCAC';
+        var header = document.getElementById('cabecalho-principal');
+        if (header) {
+            header.appendChild(els.bubble);
+            header.style.position = 'relative';
+        } else {
+            document.body.appendChild(els.bubble);
+        }
 
         els.overlay = document.createElement('div');
         els.overlay.id = 'bananeiro-overlay';

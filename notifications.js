@@ -223,6 +223,11 @@ const NOTIFICATIONS_CONFIG = {
             board.id = 'status-envio';
             board.className = 'notification-board';
 
+            var boardTitle = document.createElement('div');
+            boardTitle.className = 'board-title';
+            boardTitle.innerHTML = '<i class="fas fa-bullhorn"></i> Avisos';
+            board.appendChild(boardTitle);
+
             // Card — Estoque Inicial
             if (NOTIFICATIONS_CONFIG.estoque.enabled) {
                 const item = document.createElement('div');
@@ -320,11 +325,9 @@ const NOTIFICATIONS_CONFIG = {
         else if (diasRestantes === 1) elRotulo.innerText = 'Amanhã';
         else                          elRotulo.innerText = config.labels.next.replace('%d', diasRestantes);
 
-        // Label de status (aberto/fechado)
+        // Label de horário (formato: das HH:mm às HH:mm)
         if (elLabel) {
-            elLabel.innerText = info.isOpen
-                ? config.labels.open  + ' ' + formatTime(info.meta)
-                : config.labels.closed + ' ' + formatTime(info.meta);
+            elLabel.innerText = 'das ' + config.schedule.startTime + ' às ' + config.schedule.endTime;
         }
 
         // Urgência — aplica apenas box-shadow, sem transform: scale()
