@@ -8,8 +8,6 @@ const PHOTO_TYPES = {
 };
 
 const selectTipoFoto = document.getElementById('select-tipo-foto');
-const selectRede = document.getElementById('select-rede');
-const selectLoja = document.getElementById('select-loja');
 
 const welcomeBanner = document.getElementById('welcome-message');
 const welcomeText = document.getElementById('welcome-text');
@@ -63,7 +61,7 @@ function hideWelcomeMessage() {
 }
 
 function checkCameraAccess() {
-    const isReady = selectTipoFoto.value && selectRede.value && selectLoja.value;
+    const isReady = selectTipoFoto.value;
 
     if (isReady) {
         const openCameraBtn = document.getElementById('open-camera-btn');
@@ -94,28 +92,17 @@ function checkPhotoLimit() {
     }
 }
 
-if (selectRede) {
-    selectRede.addEventListener('change', () => {
-        var estrutura = window.QD.getEstruturaFromCache();
-        window.QD.carregarLojas(selectRede.value, selectLoja, estrutura);
-        hideWelcomeMessage();
-        currentPromotor = null;
-        checkCameraAccess();
-        updateActionHighlight();
-    });
-}
-
-if (selectLoja) {
-    selectLoja.addEventListener('change', () => {
-        var estrutura = window.QD.getEstruturaFromCache();
-        var promotor = window.QD.findPromotorPorLoja(estrutura, selectRede.value, selectLoja.value);
-        currentPromotor = promotor;
-        if (promotor) {
-            showWelcomeMessage(promotor);
-        }
-        checkCameraAccess();
-        updateActionHighlight();
-    });
+// Session already set on entrar.html — read from localStorage
+var _selecaoCamera = window.QD.getSelecao();
+if (_selecaoCamera && _selecaoCamera.rede && _selecaoCamera.loja) {
+    var _welcomeSession = document.getElementById('welcome-session');
+    if (_welcomeSession) {
+        _welcomeSession.textContent = _selecaoCamera.rede + ' › ' + _selecaoCamera.loja;
+    }
+    if (_selecaoCamera.promotor) {
+        showWelcomeMessage(_selecaoCamera.promotor);
+        currentPromotor = _selecaoCamera.promotor;
+    }
 }
 
 if (selectTipoFoto) {
@@ -126,30 +113,10 @@ if (selectTipoFoto) {
 }
 
 function updateActionHighlight() {
-    const selects = [selectRede, selectLoja, selectTipoFoto];
-    selects.forEach(el => {
-        if (el && el.closest('.input-group')) {
-            el.closest('.input-group').classList.remove('highlight-next-step');
-        }
-    });
-
-    const addHighlight = (el) => {
-        if (el && el.closest('.input-group')) {
-            el.closest('.input-group').classList.add('highlight-next-step');
-        }
-    };
-
-    if (!selectRede.value) {
-        addHighlight(selectRede);
-        return;
-    }
-    if (!selectLoja.value || selectLoja.disabled) {
-        addHighlight(selectLoja);
-        return;
-    }
-    if (!selectTipoFoto.value) {
-        addHighlight(selectTipoFoto);
-        return;
+    if (selectTipoFoto && !selectTipoFoto.value && selectTipoFoto.closest('.input-group')) {
+        selectTipoFoto.closest('.input-group').classList.add('highlight-next-step');
+    } else if (selectTipoFoto && selectTipoFoto.closest('.input-group')) {
+        selectTipoFoto.closest('.input-group').classList.remove('highlight-next-step');
     }
 }
 
@@ -241,12 +208,13 @@ function updatePhotoCounter() {
 }
 
 function capturePhoto() {
+    var _sel = _selecaoCamera || window.QD.getSelecao();
     if (photos.length >= MAX_PHOTOS) {
         alert("Limite de 5 fotos atingido! Compartilhe ou exclua alguma para continuar.");
         checkPhotoLimit();
         return;
     }
-    if (!selectTipoFoto.value || !selectRede.value || !selectLoja.value) {
+    if (!selectTipoFoto.value || !_sel || !_sel.rede || !_sel.loja) {
         alert("Por favor, preencha todos os campos antes de tirar a foto.");
         return;
     }
@@ -257,9 +225,9 @@ function capturePhoto() {
     }
 
     const tipoFotoText = `Tipo: ${selectTipoFoto.value}`;
-    const promotorText = `Promotor: ${currentPromotor || ''}`;
-    const redeText = `Rede: ${selectRede.value}`;
-    const lojaText = `Loja: ${selectLoja.value}`;
+    const promotorText = `Promotor: ${_sel.promotor || currentPromotor || ''}`;
+    const redeText = `Rede: ${_sel.rede}`;
+    const lojaText = `Loja: ${_sel.loja}`;
     const dateText = new Date().toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'medium' });
 
     const watermarkLines = [dateText, lojaText, redeText, promotorText, tipoFotoText];
@@ -593,10 +561,11 @@ async function sharePhotos() {
         return;
     }
 
+    var _sel = _selecaoCamera || window.QD.getSelecao();
     const tipoFotoText = `Tipo: ${selectTipoFoto.value}`;
-    const promotorText = `Promotor: ${currentPromotor || ''}`;
-    const redeText = `Rede: ${selectRede.value}`;
-    const lojaText = `Loja: ${selectLoja.value}`;
+    const promotorText = `Promotor: ${_sel.promotor || currentPromotor || ''}`;
+    const redeText = `Rede: ${_sel.rede}`;
+    const lojaText = `Loja: ${_sel.loja}`;
     const dateText = new Date().toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'medium' });
 
     const legendaCompartilhada = `*Relatório Fotográfico*\n${tipoFotoText}\n${promotorText}\n${redeText}\n${lojaText}\n${dateText}`;
@@ -651,9 +620,6 @@ try {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    var estrutura = window.QD.getEstruturaFromCache();
-    var selecao = window.QD.getSelecao();
-
     selectTipoFoto.innerHTML = '<option value="" disabled selected>Selecione o Tipo</option>';
     Object.keys(PHOTO_TYPES).forEach(function(value) {
         var opt = document.createElement('option');
@@ -661,20 +627,6 @@ document.addEventListener('DOMContentLoaded', () => {
         opt.textContent = PHOTO_TYPES[value];
         selectTipoFoto.appendChild(opt);
     });
-
-    if (selecao.rede && estrutura) {
-        window.QD.carregarRedes(selectRede, estrutura);
-        selectRede.value = selecao.rede;
-        window.QD.carregarLojas(selecao.rede, selectLoja, estrutura);
-        if (selecao.loja) {
-            selectLoja.value = selecao.loja;
-            currentPromotor = selecao.promotor || null;
-            if (currentPromotor) showWelcomeMessage(currentPromotor);
-        }
-        window.QD.travarDropdowns(selectRede, selectLoja);
-    } else {
-        window.QD.carregarRedes(selectRede, estrutura);
-    }
 
     checkCameraAccess();
     updateActionHighlight();

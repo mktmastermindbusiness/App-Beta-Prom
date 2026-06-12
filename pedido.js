@@ -1,7 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const selectRede = document.getElementById('rede');
-    const selectLoja = document.getElementById('loja');
-
     const productGrid = document.getElementById('product-grid');
     const addProductTrigger = document.getElementById('add-product-trigger');
     const shareWhatsappBtn = document.getElementById('share-whatsapp');
@@ -35,6 +32,17 @@ document.addEventListener('DOMContentLoaded', () => {
     let editingIndex = -1;
     let currentPromotor = null;
 
+    // Session already set on entrar.html — read from localStorage
+    var selecao = window.QD.getSelecao();
+    if (!selecao || !selecao.rede || !selecao.loja) {
+        window.location.replace('entrar.html');
+        return;
+    }
+
+    document.getElementById('pedido-rede-text').textContent = selecao.rede;
+    document.getElementById('pedido-loja-text').textContent = selecao.loja;
+    document.getElementById('pedido-userinfo').style.display = 'block';
+
     function showWelcomeMessage(promotorNome) {
         var fullName = window.QD.getPromotorFullName(promotorNome);
         welcomeText.textContent = 'Bem-vindo, ' + fullName + '!';
@@ -45,38 +53,15 @@ document.addEventListener('DOMContentLoaded', () => {
         welcomeBanner.style.display = 'none';
     }
 
-    var estrutura = window.QD.getEstruturaFromCache();
-    var selecao = window.QD.getSelecao();
-
-    if (selecao.rede && estrutura) {
-        window.QD.carregarRedes(selectRede, estrutura);
-        selectRede.value = selecao.rede;
-        window.QD.carregarLojas(selecao.rede, selectLoja, estrutura);
-        if (selecao.loja) {
-            selectLoja.value = selecao.loja;
-            currentPromotor = selecao.promotor || null;
-            if (currentPromotor) showWelcomeMessage(currentPromotor);
-        }
-        window.QD.travarDropdowns(selectRede, selectLoja);
-    } else {
-        window.QD.carregarRedes(selectRede, estrutura);
+    if (selecao.promotor) {
+        currentPromotor = selecao.promotor;
+        showWelcomeMessage(selecao.promotor);
     }
 
-    selectRede.addEventListener('change', function() {
-        var estrutura = window.QD.getEstruturaFromCache();
-        window.QD.carregarLojas(selectRede.value, selectLoja, estrutura);
-        hideWelcomeMessage();
-        currentPromotor = null;
-    });
-
-    selectLoja.addEventListener('change', function() {
-        var estrutura = window.QD.getEstruturaFromCache();
-        var promotor = window.QD.findPromotorPorLoja(estrutura, selectRede.value, selectLoja.value);
-        currentPromotor = promotor;
-        if (promotor) {
-            showWelcomeMessage(promotor);
-        }
-    });
+    var _welcomeSession = document.getElementById('pedido-session');
+    if (_welcomeSession) {
+        _welcomeSession.textContent = selecao.rede + ' \u203A ' + selecao.loja;
+    }
 
     function renderProducts() {
         productGrid.innerHTML = '';
@@ -152,6 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     function getOrderData() {
+        var _sel = selecao || window.QD.getSelecao();
         const allProducts = [];
 
         document.querySelectorAll('.fixed-qty').forEach(input => {
@@ -167,9 +153,9 @@ document.addEventListener('DOMContentLoaded', () => {
         products.forEach(p => allProducts.push(p));
 
         return {
-            rede: selectRede.value,
-            promotor: currentPromotor || '',
-            loja: selectLoja.value,
+            rede: _sel.rede || '',
+            promotor: currentPromotor || _sel.promotor || '',
+            loja: _sel.loja || '',
             products: allProducts,
             date: new Date().toLocaleDateString('pt-BR')
         };

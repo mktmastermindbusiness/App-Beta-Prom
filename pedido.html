@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="description" content="Sugestão de Pedido - Qdelícia Frutas">
     <title>Pedido - Qdelícia Frutas</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -392,20 +392,17 @@
             <div id="welcome-message" class="welcome-banner" style="display:none;">
                 <i class="fas fa-user-check"></i>
                 <span id="welcome-text"></span>
+                <span id="pedido-session" style="font-size:0.8rem;opacity:0.85;margin-left:auto;"></span>
+            </div>
+
+            <div id="pedido-userinfo" class="input-group" style="display:none;">
+                <label><i class="fas fa-store"></i> Rede</label>
+                <p id="pedido-rede-text" style="font-weight:600;margin:4px 0 0;padding:10px 12px;background:#f1f5f9;border-radius:8px;"></p>
             </div>
 
             <div class="input-group">
-                <label for="rede"><i class="fas fa-store"></i> Rede</label>
-                <select id="rede" class="report-input">
-                    <option value="" disabled selected>Selecione a Rede</option>
-                </select>
-            </div>
-
-            <div class="input-group">
-                <label for="loja"><i class="fas fa-shopping-cart"></i> Loja</label>
-                <select id="loja" class="report-input" disabled>
-                    <option value="" disabled selected>Selecione a Loja</option>
-                </select>
+                <label><i class="fas fa-shopping-cart"></i> Loja</label>
+                <p id="pedido-loja-text" style="font-weight:600;margin:4px 0 0;padding:10px 12px;background:#f1f5f9;border-radius:8px;"></p>
             </div>
         </section>
 

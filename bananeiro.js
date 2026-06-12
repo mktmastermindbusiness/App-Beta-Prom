@@ -43,9 +43,10 @@
 
     var STYLES = [
         '#bananeiro-bubble {',
-        '  position: absolute; top: 50%; right: 6px;',
-        '  transform: translateY(-50%); z-index: 210;',
-        '  width: auto; min-width: 32px; padding: 0 10px;',
+        '  grid-column: 4; grid-row: 1 / 3;',
+        '  align-self: center; justify-self: end;',
+        '  z-index: 210; width: auto; padding: 0 10px;',
+        '  margin-right: 4px;',
         '  border-radius: 14px; background: rgba(255,255,255,0.14);',
         '  color: #fff; border: 1px solid rgba(255,255,255,0.22);',
         '  cursor: pointer; font-size: 11px; font-weight: 600;',
@@ -56,7 +57,7 @@
         '  line-height: 1;',
         '}',
         '#bananeiro-bubble:hover { background: rgba(255,255,255,0.28); }',
-        '#bananeiro-bubble:active { transform: translateY(-50%) scale(0.95); }',
+        '#bananeiro-bubble:active { transform: scale(0.95); }',
         '#bananeiro-overlay {',
         '  position: fixed; inset: 0; z-index: 10000;',
         '  background: rgba(0,0,0,0.5);',
@@ -226,7 +227,6 @@
         var header = document.getElementById('cabecalho-principal');
         if (header) {
             header.appendChild(els.bubble);
-            header.style.position = 'relative';
         } else {
             document.body.appendChild(els.bubble);
         }

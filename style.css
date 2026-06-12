@@ -54,6 +54,7 @@
 
 html {
     scroll-behavior: smooth;
+    background: #4338ca;
 }
 
 body {
@@ -87,7 +88,7 @@ header {
     color: var(--white);
     height: var(--header-h-mobile);
     display: grid;
-    grid-template-columns: 48px 1fr 48px;
+    grid-template-columns: 48px 1fr auto auto;
     grid-template-rows: auto auto;
     align-items: center;
     gap: 0;
@@ -253,7 +254,7 @@ header p {
     display: none;
 }
 
-/* ---- Etiqueta de usuário fixa abaixo do header ---- */
+/* ---- Etiqueta de usuário no header (col 3) ---- */
 .user-badge {
     grid-column: 3;
     grid-row: 1 / 3;
@@ -2016,6 +2017,29 @@ body.index-page footer {
 
     header {
         position: relative; /* para o btn-refresh absoluto */
+    }
+
+    /* User info e assistente no desktop: absolutos como o btn-refresh */
+    .user-badge {
+        position: absolute;
+        right: 80px;
+        top: 50%;
+        transform: translateY(-50%);
+        grid-column: unset;
+        grid-row: unset;
+        justify-self: unset;
+        align-self: unset;
+        margin: 0;
+    }
+    #bananeiro-bubble {
+        position: absolute;
+        right: 18px;
+        top: 50%;
+        transform: translateY(-50%);
+        grid-column: unset;
+        grid-row: unset;
+        justify-self: unset;
+        align-self: unset;
     }
 
     /* Compactação: no desktop não aplica — restaura todos os valores */

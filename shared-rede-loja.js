@@ -3,7 +3,8 @@
 
     var ESTRUTURA_KEY = 'qd_app_estrutura';
     var SELECTION_KEY = 'qd_app_selection';
-    var GAS_JSON_URL = (window.QD_ESTRUTURA_URL || 'https://script.google.com/macros/s/AKfycbxUENjCvm715TESMt3wjyYAIjfhdyUstNF8QpnQmUdCKcfhJbYUFK3pYRmnCyRMuzQL/exec') + '?json=estrutura';
+    var GAS_BASE_URL = window.QD_ESTRUTURA_URL || 'https://script.google.com/macros/s/AKfycbxUENjCvm715TESMt3wjyYAIjfhdyUstNF8QpnQmUdCKcfhJbYUFK3pYRmnCyRMuzQL/exec';
+    var GAS_JSON_URL = GAS_BASE_URL + '?json=estrutura';
 
     var structureCache = null;
 
@@ -15,16 +16,27 @@
         }
     }
 
+    function syncSessionToGAS(rede, loja, promotor) {
+        var url = GAS_BASE_URL + '?action=setSession&rede=' + encodeURIComponent(rede) + '&loja=' + encodeURIComponent(loja) + '&promotor=' + encodeURIComponent(promotor || '');
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);
+        xhr.send();
+    }
+
     function salvarSelecao(rede, loja, promotor) {
         localStorage.setItem(SELECTION_KEY, JSON.stringify({
             rede: rede,
             loja: loja,
             promotor: promotor || ''
         }));
+        syncSessionToGAS(rede, loja, promotor);
     }
 
     function limparSelecao() {
         localStorage.removeItem(SELECTION_KEY);
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', GAS_BASE_URL + '?action=clearSession', true);
+        xhr.send();
     }
 
     function getEstruturaFromCache() {
